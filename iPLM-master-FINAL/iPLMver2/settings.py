@@ -80,7 +80,7 @@ WSGI_APPLICATION = 'iPLMver2.wsgi.application'
 DATABASES = {
 'default': {
 'ENGINE': 'django.db.backends.mysql',
-'NAME': 'iplmdatabase',
+'NAME': 'plm_trialdb',
 'USER': 'root',
 'PASSWORD': '',
 'HOST': '',

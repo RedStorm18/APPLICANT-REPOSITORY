@@ -5186,7 +5186,7 @@ def app_num(b):
     y = x.strftime("%y")
     z = x.strftime("%d")
     v = x.strftime("%m")
-    connec = MySQLdb.connect("localhost","root","","iplmdatabase")
+    connec = MySQLdb.connect("localhost","root","","plm_trialdb")
     cursor = connec.cursor()
     if b == 1:
         a = cursor.execute("SELECT LAST_INSERT_ID() from crs_transfereeapplicant;")
