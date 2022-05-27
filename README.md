@@ -18,6 +18,9 @@ Much better if your using visual studio code to follow the following instruction
 **2 Activate virtual env.**
 Bash : `$ source ./env/Scripts/Activate`
 CMD : `env\Scripts\Activate.bat` or by simply typing `env`
+if not working:
+try this -->>  .\env\Scripts\Activate.ps1
+
 
 **3 Install dependencies**
 `pip install -r requirements.txt`
