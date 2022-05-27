@@ -80,7 +80,7 @@ WSGI_APPLICATION = 'iPLMver2.wsgi.application'
 DATABASES = {
 'default': {
 'ENGINE': 'django.db.backends.mysql',
-'NAME': 'plm_trialdb',
+'NAME': 'iplmdatabase',
 'USER': 'root',
 'PASSWORD': '',
 'HOST': '',
@@ -143,11 +143,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'files')
 MEDIA_URL = '/files/'
 AUTH_USER_MODEL = 'CRS.User'
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'cperson.dummy@gmail.com'
-EMAIL_HOST_PASSWORD = 'CpersonEmail2021'
+EMAIL_HOST_USER = 'iplm.haribon@gmail.com'
+EMAIL_HOST_PASSWORD = 'iplm2022'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 LOGOUT_REDIRECT_URL = 'index'

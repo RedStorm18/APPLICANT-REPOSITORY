@@ -59,7 +59,6 @@ class FacultyInfoInline(admin.StackedInline):
     verbose_name_plural = 'Faculty Profile'
     fk_name = 'facultyUser'
 
-
 class StudentInfoInline(admin.StackedInline):
     # To add fields from Faculty database to User creation in Admin Site
     model = StudentInfo
@@ -228,10 +227,10 @@ class AcademicYearInfoAdmin(admin.ModelAdmin):
 
     def has_delete_permission(self, request, obj=None):
         # Disable delete
-        return False
+        return True
 
     def has_add_permission(self, request, obj=None):
-        return False
+        return True
 
 admin.site.register(AcademicYearInfo, AcademicYearInfoAdmin)
 
@@ -808,3 +807,8 @@ class courseListAdmin(admin.ModelAdmin):
 admin.site.register(Curricula, CurriculaAdmin),
 admin.site.register(courseList, courseListAdmin),
 admin.site.register(studyPlan),
+
+class NotificationAdmin(admin.ModelAdmin): 
+    list_display = ['user_id', 'title', 'description', 'status', 'created_at']
+
+admin.site.register(Notification, NotificationAdmin) 
