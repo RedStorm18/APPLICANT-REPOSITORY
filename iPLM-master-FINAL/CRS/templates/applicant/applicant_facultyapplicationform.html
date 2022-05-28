@@ -49,7 +49,8 @@
 		background: #8f8f8f; 
 	}
 
-	#FullNametext, #ContactInformationText, #DepartmentInformationText
+	/* para maging kulay blue yung font */
+	#FullNametext, #ContactInformationText, #DepartmentInformationText, #AvailabilityTimeText
 	{
 		font-size: 18px;
 		font-family: Nunito;
@@ -75,7 +76,15 @@
 		left: 80px;
 	}
 
-	#LastName, #FirstName, #MiddleName, #EmailAddress, #Phone, #department
+	/* para kalinya ng header */
+	#AvailabilityTimeText
+	{
+		top: 360px;
+		left: 80px;
+	}
+
+	/* yung sa effect ng paglalagyan ng input */
+	#LastName, #FirstName, #MiddleName, #EmailAddress, #Phone, #department, #Time, #Sex
 	{
 		width: 240px;
 		height:25px;
@@ -103,10 +112,26 @@
 		top: 220px;
 		left: 48%;
 	}
+
+	#Sex
+	{
+		position:absolute;
+		top: 220px;
+		left: 70.5%;
+	}
+
 	#department
 	{
 		position:absolute;
 		top: 290px;
+		left: 280px;
+	}
+
+	/* para kahanay ng mga paglalagyan ng input */
+	#Time
+	{
+		position:absolute;
+		top: 360px;
 		left: 280px;
 	}
 
@@ -131,7 +156,27 @@
 		top: 250px;
 		left: 49%;
 	}
-	
+
+	#subSex
+	{
+		font-size: 12px;
+		font-family: Nunito;
+		color: #0C66CC;
+		position:absolute;
+		top: 250px;
+		left: 72%;
+	}
+
+	/* para nasa ibaba ng lalagyan ng input */
+	#subTime
+	{
+		font-size: 12px;
+		font-family: Nunito;
+		color: #0C66CC;
+		position:absolute;
+		top: 390px;
+		left: 27%;
+	}
 	
 </style>
 
@@ -161,20 +206,33 @@
 			<input type="text" id="MiddleName" name="middleName" placeholder="Cortez">
 			<p id="subMiddlename">Middle Name</p>
 		
-	<p id="ContactInformationText">Contact Information<span style="color:#ff0000"><b>*</b></span></p>            <!--email address-->
+	<p id="ContactInformationText">Additional Information<span style="color:#ff0000"><b>*</b></span></p>            <!--email address-->
 			<input type="email" id="EmailAddress" name="email" placeholder="name@email.com">
 			<p id="subEmailAddress">Email Address</p>
             
             <!--phone number-->
 			<input type="tel" id="Phone" name="phoneNumber" pattern="[0-9]{11}" placeholder="09123456789">
 			<p id="subPhone">Phone Number</p>
-	
+
+			<select id="Sex">
+				<option value="Male">Male</option>
+				<option value="Female">Female</option>
+			</select>
+			<p id="subSex">Sex</p>
+
 	<p id="DepartmentInformationText">Department to Apply <span style="color:#ff0000"><b>*</b></span></p>            <!--email address-->
-			<input type="text" id="department" name="department" placeholder="BSIT">
+			<select id="department" name="department">
+				<option value="BSIT">BSIT</option>
+				<option value="BSEE">BSEE</option>
+			</select>
 			<p id="subDepartment">Department</p>
-			
-		
-		
+
+	<p id="AvailabilityTimeText">Availability Time <span style="color:#ff0000"><b>*</b></span></p>
+			<input type="text" id="Time" name="Time" placeholder="12:00AM-12:00PM">
+			<p id="subTime">Time</p>
+
+
+
 	<hr id="line2" color="#d3d3d3" width="980px">
 	
 	<p id="UploadDocumentsTitle">Upload Documents</p>
@@ -188,7 +246,11 @@
 	<p id="CredentialsShape"> &nbsp;&nbsp;&nbsp;&nbsp; Credentials</p>
             
 	<p id="TORShape">&nbsp;&nbsp;&nbsp;&nbsp;TOR</p>
-	
+
+	<p id="PDSShape">&nbsp;&nbsp;&nbsp;&nbsp;PDS</p>
+
+
+
      <!--Choose file-->       
 	<input type="file" id="CVFile" name="CV" mr-4>
             
@@ -197,6 +259,10 @@
 	<input type="file" id="CredentialsFile" name="credentials">
             
 	<input type="file" id="TORFile" name="TOR">
+
+	<input type="file" id="PDSFile" name="PDS">
+
+
 	{% if messages %}
 	{% for message in messages %}
 			{{ message }}
@@ -206,10 +272,9 @@
 	
 	
 	<picture><a><p id="imageForm"><img src="{% static 'CRS/images/Applicants/Faculty/clip-1712.png' %}" alt="iplm" width="290px" height="230px"></a></p></picture>
-        
-	<a> <button id="submitbutton"> <!--templates/Applicants/Faculty--> Submit </button></a>
-</form> </div>
 
+</form> </div>
+	<a href="{% url 'applicant_facultyapplicationform_workexpsheet' %}"> <button id="submitbutton"> <!--templates/Applicants/Faculty--> Next </button></a>
 
 
 
