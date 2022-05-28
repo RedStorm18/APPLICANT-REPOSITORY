@@ -1,3 +1,4 @@
+import dataclasses
 from django.contrib.messages.api import error
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, update_session_auth_hash
@@ -6,7 +7,7 @@ from django.contrib import messages
 from . import filters
 from .forms import *
 from .models import *
-from django.conf import os
+from django.conf import PASSWORD_RESET_TIMEOUT_DAYS_DEPRECATED_MSG, os
 from iPLMver2.settings import EMAIL_HOST_USER
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, redirect, reverse, get_object_or_404
@@ -22,10 +23,16 @@ from django.template.loader import get_template
 from xhtml2pdf import pisa
 from django.forms import inlineformset_factory
 from django.db.models import Avg, Sum
-from django.core.mail import EmailMultiAlternatives, send_mail, EmailMessage
+from django.core.mail import EmailMultiAlternatives, send_mail, EmailMessage, BadHeaderError
 from CRS.models import FacultyApplicant
 from django.db.models import Q
 from django.utils import timezone
+from django.contrib.auth.forms import PasswordResetForm
+from django.template.loader import render_to_string
+from django.db.models.query_utils import Q
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
 #new import
 import datetime 
 import MySQLdb
@@ -33,6 +40,7 @@ from django.contrib.auth import get_user_model
 import string
 #global variable
 psw = "a"
+
 def error_404_view(request,exception):
     return render(request, 'error.html')
 
@@ -41,16 +49,25 @@ def error_500_view(request):
 
 def aboutUs(request):
     return render(request, 'aboutUs.html')
-def al(request):
-    return render(request,'applicant_login.html')
 
+def get_notifications(user_id):
+    try :
+        return Notification.objects.filter(user_id=user_id)
+    except Notification.DoesNotExist:
+        return None
+
+def send_notifications(user_id, title, description):
+    Notification(user_id=user_id, title=title, description=description)
+    Notification.save()
+    return 'Successfully Send Notification'
+    
 def index(request):
     global psw
     if request.method == 'POST':
         username = request.POST.get('email')
         password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
-
+        
         if user is not None:
             login(request, user)
             type_obj = request.user
@@ -82,6 +99,7 @@ def index(request):
                 return render(request, 'index.html')
     return render(request, 'index.html')
 
+
 # ------------------ CHAIRPERSON VIEWS ------------------------
 def choose_one(request):
     type_obj = request.user
@@ -108,9 +126,10 @@ def chairperson(request):
             countf = FacultyInfo.objects.filter(departmentID=cperson.departmentID).count()
             college = College.objects.filter(collegeName='CET')
             countsub = subjectInfo.objects.filter(college__in=college).count()
+        notifications = get_notifications(id)
         return render(request, './chairperson/chairperson.html', {'user': user, 'fname': fname, 'mname': mname,
                                                                   'lname': lname, 'counts': counts, 'countf': countf,
-                                                                  'countsub': countsub, 'acad': acad})
+                                                                  'countsub': countsub, 'acad': acad, 'notifications': notifications})
     else:
         return redirect('index')    
 
@@ -1465,13 +1484,30 @@ def students_bsee6B6(request):
     return render(request, './chairperson/students BSEE/students_bsee6B6.html', context)
 
 # Faculty (chairperson)
+#def full_time(request):
+   # id = request.user.id; cperson = FacultyInfo.objects.get(pdk=id)
+    #work_status = FacultyInfo.objects.filter(facultyWorkstatus='Full-Time').filter(departmentID=cperson.departmentID)
+    #count = work_status.count()
+    #result = filters.Faculty(request.GET, queryset=work_status); work_status = result.qs
+    #context = {'work_status': work_status, 'count': count, 'result': result}
+    #return render(request, './chairperson/Faculty/full_time.html', context)
+
+
 def full_time(request):
     id = request.user.id; cperson = FacultyInfo.objects.get(pk=id)
     work_status = FacultyInfo.objects.filter(facultyWorkstatus='Full-Time').filter(departmentID=cperson.departmentID)
     count = work_status.count()
-    result = filters.Faculty(request.GET, queryset=work_status); work_status = result.qs
-    context = {'work_status': work_status, 'count': count, 'result': result}
+    if request.GET.get('search'):
+        search = request.GET['search']
+        work_status = FacultyInfo.objects.filter(
+            Q(facultyID__contains=search) |
+            Q(facultyUser__firstName__icontains=search) |
+            Q(facultyUser__lastName__icontains=search) |
+            Q(facultyUser__middleName__icontains=search)
+        )
+    context = {'work_status': work_status, 'count': count}
     return render(request, './chairperson/Faculty/full_time.html', context)
+
 def part_time(request):
     id = request.user.id; cperson = FacultyInfo.objects.get(pk=id)
     work_status = FacultyInfo.objects.filter(facultyWorkstatus='Part-Time').filter(departmentID=cperson.departmentID)
@@ -1618,6 +1654,7 @@ def others_studyplan(request):
 # -------------------- FACULTY VIEWS ----------------------------------
 def fHome(request):
     if request.user.is_authenticated and request.user.is_faculty:
+        id_adv = request.user.id
         user = request.user
         facultyInfo = request.user.facultyinfo
         acad = AcademicYearInfo.objects.all
@@ -1625,8 +1662,13 @@ def fHome(request):
         collegeid=facultyInfo.collegeID_id
         college=College.objects.get(id=collegeid)
         department=Department.objects.get(id = departmentid)
+        f_user = FacultyInfo.objects.get(pk = id_adv)
+        advisory = BlockSection.objects.filter(adviser = f_user)
+        stud_advisory = StudentInfo.objects.filter(studentSection__in = advisory)
+        count_block = advisory.count()
+        count_stud = stud_advisory.count()
         
-        return render(request,'./faculty/fHome.html',{'user':user,'facultyInfo':facultyInfo,'department':department,'college':college,'acad':acad})
+        return render(request,'./faculty/fHome.html',{'user':user,'facultyInfo':facultyInfo,'department':department,'college':college,'acad':acad, 'count_block':count_block, 'count_stud':count_stud})
     else:
         return redirect('index')
 
@@ -1635,7 +1677,7 @@ def fProfile(request):
         user = request.user
         facultyInfo = request.user.facultyinfo
         departmentid=facultyInfo.departmentID_id
-        collegeid=facultyInfo.departmentID_id
+        collegeid=facultyInfo.collegeID_id
         college=College.objects.get(id=collegeid)
         department=Department.objects.get(id = departmentid)
         return render(request,'./faculty/fProfile.html',{'user':user,'facultyInfo':facultyInfo,'department':department,'college':college})
@@ -1644,14 +1686,20 @@ def fProfile(request):
 
 
 def fHomeNotification(request):
-    return render(request,'./faculty/fHomeNotifications.html')
+     if request.user.is_authenticated and request.user.is_faculty:
+        id= request.user.id
+        acad = AcademicYearInfo.objects.all
+        context = {'id': id,'acad':acad}
+        return render(request, './faculty/fHomeNotifcations.html', context) 
+     else:
+         return redirect('index')
 
 def fProfileEdit(request):
     if request.user.is_authenticated and request.user.is_faculty:
         user = request.user
         facultyInfo = request.user.facultyinfo
         departmentid=facultyInfo.departmentID_id
-        collegeid=facultyInfo.departmentID_id
+        collegeid=facultyInfo.collegeID_id
         college=College.objects.get(id=collegeid)
         department=Department.objects.get(id = departmentid)
         
@@ -1842,7 +1890,7 @@ def parttime_sched(request):
         return redirect('index')
 
 
-def fStudents_advisory(request):
+"""def fStudents_advisory(request):
     if request.user.is_authenticated and request.user.is_faculty:
         id= request.user.id
         f_user = FacultyInfo.objects.get(pk = id)
@@ -1855,10 +1903,62 @@ def fStudents_advisory(request):
         context = {'advisory': advisory, 'count': count, 'stud_advisory': stud_advisory}
         return render(request, 'faculty/fStudents_advisory.html', context)
     else:
+        return redirect('index')"""
+
+def fStudents_advisory(request):
+    if request.user.is_authenticated and request.user.is_faculty:
+        id= request.user.id
+        f_user = FacultyInfo.objects.get(pk = id)
+        advisory = BlockSection.objects.filter(adviser = f_user)
+        stud_advisory = StudentInfo.objects.filter(studentSection__in = advisory)
+
+        stud_advisory = StudentInfo.objects.filter(studentSection__in = advisory).order_by('studentUser__lastName')
+
+        #FILTER DROPDOWN
+        block = '0'
+        if (request.method=='POST'):
+            status=request.POST.get('slct')
+            if (status == '0'):
+                stud_advisory = StudentInfo.objects.filter(studentSection__in = advisory).order_by('studentUser__lastName')
+            else: 
+                stud_advisory = stud_advisory.filter(studentSection_id = status)
+                block = '1'
+        
+        if request.GET.get('studentID'):
+            search = request.GET['studentID']
+            stud_advisory = stud_advisory.filter(
+                Q(studentID__contains=search) |
+                Q(studentUser__firstName__icontains=search) |
+                Q(studentUser__lastName__icontains=search) |
+                Q(studentUser__middleName__icontains=search)
+            )
+        
+        count = stud_advisory.count()
+        if count == 0:
+            messages.error (request, 'You have no advisory class!')
+            context = {'advisory': advisory}
+            return render (request, './faculty/fStudents_advisory.html', context)   
+
+        context = {'advisory': advisory, 'count': count, 'stud_advisory': stud_advisory, 'block': block}
+        return render(request, 'faculty/fStudents_advisory.html', context)
+    else:
         return redirect('index')
+
 
 def fStudents_viewStudentGrade (request,stud_id):
     fcount = 0
+    flag = 0
+    flag2 = 0
+    flag3 = 0
+    flag4 = 0
+    flag5 = 0
+    flag6 = 0
+    flag7 = 0
+    flag8 = 0
+    flag9 = 0
+    flag10 = 0
+    flag11 = 0
+    flag12 = 0
     if request.user.is_authenticated and request.user.is_faculty: 
         try:
             checklist = currchecklist.objects.filter(owner_id=stud_id).filter(yearTaken='1').filter(semTaken='1')
@@ -1901,6 +2001,8 @@ def fStudents_viewStudentGrade (request,stud_id):
             for subj in checklist.filter(curriculumCode__in = count):
                 n = float(subj.curriculumCode.subjectUnits)
                 g = float(subj.subjectGrades)
+                if g >= 3:
+                    flag = 1
                 unitprod = n * g
                 prevunitsum = prevunitsum+unitprod
                 unitsum = unitsum + n
@@ -1911,6 +2013,8 @@ def fStudents_viewStudentGrade (request,stud_id):
             for subj in checklist2.filter(curriculumCode__in = count):
                 n2 = float(subj.curriculumCode.subjectUnits)
                 g2 = float(subj.subjectGrades)
+                if g2 >= 3:
+                    flag2 = 1
                 unitprod2 = n2 * g2
                 prevunitsum2 = prevunitsum2+unitprod2
                 unitsum2 = unitsum2 + n2
@@ -1921,6 +2025,8 @@ def fStudents_viewStudentGrade (request,stud_id):
             for subj in checklist3.filter(curriculumCode__in = count):
                 n3 = float(subj.curriculumCode.subjectUnits)
                 g3 = float(subj.subjectGrades)
+                if g3 >= 3:
+                    flag3 = 1
                 unitprod3 = n3 * g3
                 prevunitsum3 = prevunitsum3+unitprod3
                 unitsum3 = unitsum3 + n3
@@ -1931,6 +2037,8 @@ def fStudents_viewStudentGrade (request,stud_id):
             for subj in checklist4.filter(curriculumCode__in = count):
                 n4 = float(subj.curriculumCode.subjectUnits)
                 g4 = float(subj.subjectGrades)
+                if g4 >= 3:
+                    flag4 = 1
                 unitprod4 = n4 * g4
                 prevunitsum4 = prevunitsum4+unitprod4
                 unitsum4 = unitsum4 + n4
@@ -1941,6 +2049,8 @@ def fStudents_viewStudentGrade (request,stud_id):
             for subj in checklist5.filter(curriculumCode__in = count):
                 n5 = float(subj.curriculumCode.subjectUnits)
                 g5 = float(subj.subjectGrades)
+                if g5 >= 3:
+                    flag5 = 1
                 unitprod5 = n5 * g5
                 prevunitsum5 = prevunitsum5+unitprod5
                 unitsum5 = unitsum5 + n5
@@ -1951,6 +2061,8 @@ def fStudents_viewStudentGrade (request,stud_id):
             for subj in checklist6.filter(curriculumCode__in = count):
                 n6 = float(subj.curriculumCode.subjectUnits)
                 g6 = float(subj.subjectGrades)
+                if g6 >= 3:
+                    flag6 = 1
                 unitprod6 = n6 * g6
                 prevunitsum6 = prevunitsum6+unitprod6
                 unitsum6 = unitsum6 + n6
@@ -1961,6 +2073,8 @@ def fStudents_viewStudentGrade (request,stud_id):
             for subj in checklist7.filter(curriculumCode__in = count):
                 n7 = float(subj.curriculumCode.subjectUnits)
                 g7 = float(subj.subjectGrades)
+                if g7 >= 3:
+                    flag7 = 1
                 unitprod7 = n7 * g7
                 prevunitsum7 = prevunitsum7+unitprod7
                 unitsum7 = unitsum7 + n7
@@ -1971,6 +2085,8 @@ def fStudents_viewStudentGrade (request,stud_id):
             for subj in checklist8.filter(curriculumCode__in = count):
                 n8 = float(subj.curriculumCode.subjectUnits)
                 g8 = float(subj.subjectGrades)
+                if g8 >= 3:
+                    flag8 = 1
                 unitprod8 = n8 * g8
                 prevunitsum8 = prevunitsum8+unitprod8
                 unitsum8 = unitsum8 + n8
@@ -1981,6 +2097,8 @@ def fStudents_viewStudentGrade (request,stud_id):
             for subj in checklist9.filter(curriculumCode__in = count):
                 n9 = float(subj.curriculumCode.subjectUnits)
                 g9 = float(subj.subjectGrades)
+                if g9 >= 3:
+                    flag9 = 1
                 unitprod9 = n9 * g9
                 prevunitsum9 = prevunitsum9+unitprod9
                 unitsum9 = unitsum9 + n9
@@ -1991,6 +2109,8 @@ def fStudents_viewStudentGrade (request,stud_id):
             for subj in checklist10.filter(curriculumCode__in = count):
                 n10 = float(subj.curriculumCode.subjectUnits)
                 g10 = float(subj.subjectGrades)
+                if g10 >= 3:
+                    flag10 = 1
                 unitprod10 = n10 * g10
                 prevunitsum10 = prevunitsum10+unitprod10
                 unitsum10 = unitsum10 + n10
@@ -2001,6 +2121,8 @@ def fStudents_viewStudentGrade (request,stud_id):
             for subj in checklist11.filter(curriculumCode__in = count):
                 n11 = float(subj.curriculumCode.subjectUnits)
                 g11 = float(subj.subjectGrades)
+                if g11 >= 3:
+                    flag11 = 1
                 unitprod11 = n11 * g11
                 prevunitsum11 = prevunitsum11+unitprod11
                 unitsum11 = unitsum11 + n11
@@ -2011,6 +2133,8 @@ def fStudents_viewStudentGrade (request,stud_id):
             for subj in checklist12.filter(curriculumCode__in = count):
                 n12 = float(subj.curriculumCode.subjectUnits)
                 g12 = float(subj.subjectGrades)
+                if g12 >= 3:
+                    flag12 = 1
                 unitprod12 = n12 * g12
                 prevunitsum12 = prevunitsum12+unitprod12
                 unitsum12 = unitsum12 + n12
@@ -2045,9 +2169,10 @@ def fStudents_viewStudentGrade (request,stud_id):
                     grade_file.remarks = "Returned"
                     grade_file.crsFile.delete()
                     grade_file.save()
-                    messages.success(request,'File is Returned, No file.')
+                    messages.success(request,'File is Returned! No file.')
                 elif status=='Approved':
                     grade_file.remarks = "Approved"
+                    messages.success(request,'File is Approved!')
                     grade_file.save()
         if 'feedbackBtn' in request.POST:
             fcount = 1
@@ -2056,7 +2181,7 @@ def fStudents_viewStudentGrade (request,stud_id):
                 grade_file.comment = request.POST.get('message')
                 grade_file.save()
                 messages.success(request,'Feedback is successfully sent!')
-        context = {'checklist': checklist,'checklist2': checklist2,'checklist3': checklist3,'checklist4': checklist4,'checklist5': checklist5,'checklist6': checklist6, 'checklist7': checklist7,'checklist8': checklist8,'checklist9': checklist9, 'checklist10': checklist10, 'checklist11': checklist11, 'checklist12': checklist12, 'ave':ave, 'ave2': ave2, 'ave3':ave3, 'ave4':ave4, 'ave5':ave5, 'ave6':ave6, 'ave7':ave7, 'ave8' :ave8, 'ave9':ave9, 'ave10':ave10, 'ave11':ave11, 'ave12':ave12, 'stud_id': stud_id, 'grade_file':grade_file, 'fcount':fcount}
+        context = {'checklist': checklist,'checklist2': checklist2,'checklist3': checklist3,'checklist4': checklist4,'checklist5': checklist5,'checklist6': checklist6, 'checklist7': checklist7,'checklist8': checklist8,'checklist9': checklist9, 'checklist10': checklist10, 'checklist11': checklist11, 'checklist12': checklist12, 'ave':ave, 'ave2': ave2, 'ave3':ave3, 'ave4':ave4, 'ave5':ave5, 'ave6':ave6, 'ave7':ave7, 'ave8' :ave8, 'ave9':ave9, 'ave10':ave10, 'ave11':ave11, 'ave12':ave12, 'stud_id': stud_id, 'grade_file':grade_file, 'fcount':fcount, 'flag':flag, 'flag2':flag2, 'flag3':flag3, 'flag4':flag4, 'flag5':flag5, 'flag6':flag6, 'flag7':flag7, 'flag8':flag8, 'flag9':flag9, 'flag10':flag10, 'flag11':flag11, 'flag12':flag12}
         return render(request, 'faculty/fStudents_viewStudentGrade.html', context)
     else:
         return redirect('index')
@@ -2080,6 +2205,7 @@ def fViewSched(request):
     if request.user.is_authenticated and request.user.is_faculty:
         acad = AcademicYearInfo.objects.all
         id= request.user.id
+        facultyInfo = request.user.facultyinfo
         info = FacultyInfo.objects.get(facultyUser=id)
         schedule = studentScheduling.objects.filter(instructor=info)
         subjects = schedule.count()
@@ -5053,6 +5179,7 @@ def sendmailfile(request, faculty_id):
     email.send()
     messages.success(request,"Successfully sent!")
     return HttpResponseRedirect(reverse('faculty_view', args=(faculty_id)))
+
 #APPLICATION NUMBER FUNCTION AND GLOBAL VARIABLES 
 def app_num(b):
     x = datetime.datetime.now()
@@ -5199,6 +5326,9 @@ def shifter9(request):
         middle = mname.lower()
         last = lname.lower()
         last = last.translate({ord(c): None for c in string.whitespace})
+        fname = fname.title()
+        mname = mname.title()
+        lname = lname.title()
         f = first[0]
         m = middle[0]
         email = f + m + last +"@plm.edu.ph"
@@ -5327,3 +5457,68 @@ def FProfile(request):
         return render(request, 'applicant/profile/BaseProfile.html', context)
     else:
          return redirect('index')
+def GradesNotif(request):
+    if request.user.is_authenticated and request.user.is_student:
+        id= request.user.id
+        acad = AcademicYearInfo.objects.all
+        info = StudentInfo.objects.get(studentUser=id)
+        try:
+            notif_type = "GRADES SUBMISSION"
+            feedback = crsGrade.objects.get(studentID=id)
+            description = "Application Submission Feedback"
+        except crsGrade.DoesNotExist:
+            notif_type = "GRADES SUBMISSION"
+            description = "No Submitted Application"
+            feedback = None
+        context = {'id': id,'acad':acad, 'info':info, 'feedback' : feedback, 'notif_type' : notif_type, 'description' : description }
+        return render(request, 'student/sHome/sHomeNotifdetails.html', context) 
+    else:
+         return redirect('index')
+
+def notifications(request, notification_id):
+    fname = request.user.firstName
+    mname = request.user.middleName
+    lname = request.user.lastName
+    notification = Notification.objects.get(pk=notification_id)
+    notifications = get_notifications(request.user.id)
+    print(notification.title)
+    return render(request, 'chairperson/chairperson_notification.html', 
+    {
+        'fname' : fname,
+        'mname' : mname,
+        'lname' : lname,
+        'notification' : notification,
+        'notifications': notifications
+    })
+
+def pw_reset(request):
+    if request.method == 'POST':
+        password_form = PasswordResetForm(request.POST)
+        if password_form.is_valid():
+            data = password_form.cleaned_data['email']
+            user_email = User.objects.filter(Q(email=data))
+            if user_email.exists():
+                for user in user_email:
+                    subject = 'Password Reset Request'
+                    email_template_name = 'pw_reset/password_message.txt'
+                    parameters = {
+                        'email': user.email,
+                        'lastName': user.lastName,
+                        'domain': '127.0.0.1:8000',
+                        'site_name': 'iPLM',
+                        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                        'token': default_token_generator.make_token(user),
+                        'protocol': 'http',
+                    }
+                    email = render_to_string(email_template_name, parameters)
+                    try:
+                        send_mail(subject, email, '', [user.email], fail_silently=False)
+                    except:
+                        return HttpResponse('Invalid Header')
+                    return redirect('password_reset_done')
+    else:
+        password_form = PasswordResetForm()
+    context = {
+        'password_form': password_form,
+    }
+    return render(request, 'pw_reset/password_reset.html', context)

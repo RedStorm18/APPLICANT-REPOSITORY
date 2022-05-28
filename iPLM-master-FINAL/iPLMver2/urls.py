@@ -18,7 +18,7 @@ from django.conf.urls import handler400, handler404, url, include
 from django.conf import settings
 from django.views.static import serve
 from django.views.static import serve as mediaserve
-from django.urls import path
+
 urlpatterns = [
     url(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
     url('^admin/', admin.site.urls),

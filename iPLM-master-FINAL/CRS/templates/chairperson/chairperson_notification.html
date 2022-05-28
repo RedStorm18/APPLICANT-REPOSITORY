@@ -1,0 +1,144 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title> Chairperson Notification DRAFT </title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js"></script>
+    <link rel="stylesheet" href="{% static 'CRS/css/cHome/cHomeStyle.css' %}">
+    
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito">
+</head>
+
+<body>
+
+    <div class="wrapper">
+
+        <!-- Sidebar -->
+       <nav id="sidebar">
+        <div class="sidebar-header">
+            <li>
+                <p><br><br><img src="{% static 'CRS/images/fHomeAndProfile/hat.png' %}" width="126px" height="87px"><br><br>
+            </li>
+        </div>
+        <ul class="sidebar components">
+            <li class="active"><a href="{% url 'chairperson' %}"><img src="{% static 'CRS/images/cIcons/home2.png' %}" width="97px" height="auto"></a></li>
+            <li><a href="{% url 'is_active' %}"><img src="{% static 'CRS/images/cIcons/department2.png' %}" width="97px" height="auto"></a></li>
+            <li><a href="{% url 'dept_student' %}"><img src="{% static 'CRS/images/cIcons/students2.png' %}" width="97px" height="auto"></a></li>
+            <li><a href="{% url 'full_time' %}"><img src="{% static 'CRS/images/cIcons/faculty2.png' %}" width="97px" height="auto"></a></li>
+            <li><a href="{% url 'cOthers-studyPlan' %}"><img src="{% static 'CRS/images/cIcons/others2.png' %}" width="97px" height="auto"></a></li>
+            <li><a href="{% url 'logout' %}"><img src="{% static 'CRS/images/cIcons/log-out2.png' %}" width="97px" height="auto"></a></li>
+        </ul>
+      </nav>
+    <!--End of Sidebar -->
+
+        <!-- Content -->
+        <div id="content">
+
+            <div class=" container-fluid">
+
+                <!-- Welcome Panel -->
+                <div class="main row">
+
+                    <div class="col-lg-10">
+                        <div class="row" id="head">
+                            <p>Welcome</p>
+                            <p>&nbsp;Chairperson!</p>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-9 pt-3">
+                                <table>
+                                    <tr>
+                                        <td class="notification"><img id="notif" src="{% static 'CRS/images/cHome/notification.svg' %}" width="40px" height="30px">
+                                            <div class="dropdown-menu">
+                                                <p id="notiftitle" href="#">Notifications<br></p>
+                                                {% if notifications %}
+                                                    {% for notification in notifications %}
+                                                    <a  href="{% url 'notifications' notification.id %}"><p id="notifdrops"><b>{{notification.title}}</b><br>{{notification.description}}</p><br></a>
+                                                    {% endfor %}
+                                                {% else %}
+                                                    <p>No Notifications</p>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <p id="pipe">|</p>
+                                        </td>
+                                        <td><img id="user" src="{% static 'CRS/images/cHome/user.svg' %}" width="35px" height="35px"></td>
+                                        <td id="uname">
+                                            <a href="{% url 'chairperson_profile' %}" onmouseover="changeText(this,'View Profile')" onmouseout="changeText(this,'  {{ lname|capfirst }}, {{ fname|capfirst }} {{ mname|capfirst }}')">{{ lname|capfirst }}, {{ fname|capfirst }} {{ mname|capfirst }}</a><!-- Yung Fullname daw dito galing DB -->
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-2">
+                        <img class="pic" src="{% static '/CRS/images/cHome/clip-school-competitions.png' %}" width="290" height="200" align="right">
+                    </div>
+
+                </div>
+
+                <!--NOTIFICATION-->
+                
+                <div id="notifrow" class="row pt-5">
+                    <div id="notifcol" class="col-lg-5">
+                        <p id="notifhead"><img id="bluebell" src="{% static 'CRS/images/cHome/bluebell.svg' %}">&nbsp;&nbsp;Notification</p>
+                        
+                        <!-- DB NOTIFICATION LIST BELOW -->
+                        {% if notifications %}
+                            {% for notification in notifications %}
+                                <a  href="{% url 'notifications' notification.id %}"><p id="notifdrops"><b>{{notification.title}}</b><br>{{notification.description}}</p><br></a>
+                            {% endfor %}
+                        {% else %}
+                            <p>No Notifications</p>
+                        {% endif %}
+                        
+                    </div>
+                    
+                    <div class="col-lg-7">
+                        <div class="row">
+                            <div class="col-lg-12 pl-5">
+                                <p id="notifhead2">{{notification.title}}<br></p><!-- DB NOTIFICATION TITLE BELOW -->
+                                <p id="notifhead3"><img id="userblue" src="{% static 'CRS/images/cHome/notification.svg' %}" height="35" width="35">&nbsp;&nbsp;Sender's Name</p>
+                            </div>
+                        </div>
+                        <hr id="notifline">
+                        <div class="row">
+                            <div class="col-lg-12 pt-3 pl-5"><!-- DB NOTIFICATION CONTENT / MESSAGE BELOW -->
+                                <p id="notiftext">{{notification.description}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!--END NOTIFICATION-->
+
+
+
+            </div>
+
+        </div>
+    </div>
+    <!-- Javascript -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+        function changeText(obj, text) {
+            obj.innerText = text;
+        }
+    </script>
+
+</body>
+
+</html>

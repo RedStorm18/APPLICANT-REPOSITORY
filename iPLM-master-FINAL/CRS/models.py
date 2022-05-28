@@ -411,7 +411,7 @@ class hdApplicant(models.Model):
     # dateApproved = models.DateTimeField()
     class Meta:
         verbose_name_plural = "HD Applicants"
-    
+
     def __str__(self):
         return self.studentID.studentUser.lastName
 
@@ -702,7 +702,6 @@ class FacultyApplicant(models.Model):
     credentials = models.FileField(upload_to='facultyApplicant/', blank=True, null=True)
     TOR = models.FileField(upload_to='facultyApplicant/', blank=True, null=True)
     remarks = models.CharField(max_length=150, default='Submitted', verbose_name='Status')
-    applicant_num = models.CharField(max_length=10, verbose_name="applicant_num", null=True)
 
     class Meta:
         verbose_name_plural = "Faculty Applicants"
@@ -779,3 +778,18 @@ class studyPlan(models.Model):
 
     def __str__(self):
         return self.studentinfo.studentID
+
+class Notification(models.Model): 
+    STATUS_CHOICES = (
+        ('Read', 'Read'),
+        ('Unread', 'Unread')
+    )
+
+    user_id = models.ForeignKey(User, verbose_name='user_id', on_delete=models.CASCADE)
+    title = models.CharField(verbose_name="title", max_length=255)
+    description = models.CharField(verbose_name="description", max_length=255)
+    status = models.CharField(verbose_name="status", choices=STATUS_CHOICES, max_length=255, default="Unread")
+    created_at = models.TimeField(verbose_name="created_at", auto_now_add=True)
+
+    def __str__(self):
+        return self.title
