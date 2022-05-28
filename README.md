@@ -25,6 +25,26 @@ try this -->>  .\env\Scripts\Activate.ps1
 **3 Install dependencies**
 `pip install -r requirements.txt`
 
+**3.5 SEARCH IN VS CODE**
+
+open views.py 
+
+search select last_insert
+
+then lahat ng may a = cursor lagyan ng # sa tabi ni a
+ganto kalalabasan
+
+#a = cursor
+
+tapos sa taas ng if b == 1: lagay kayo ng a = 1
+ganto lalabas
+
+a = 1
+if b == 1:
+
+then save views.py
+
+
 **4 Make Migrations**
 `python manage.py makemigrations`
 
@@ -48,6 +68,13 @@ try this -->>  .\env\Scripts\Activate.ps1
 _Optional_
 **NOTE: Pwede mo lang ito magamit pag fresh pa ang database mo (Walang laman)**
 You can run `python manage.py databaseseed` to add users with default password of `password`
+
+** 7.5 delete comments**
+open views.py 
+
+search select last_insert
+
+tanggalin yung # sa tabi ng a at idelete yung a = 1
 
 **8 Runserver**
 `python manage.py runserver` then **Ctrl+click 127.0.0.1:8000**
