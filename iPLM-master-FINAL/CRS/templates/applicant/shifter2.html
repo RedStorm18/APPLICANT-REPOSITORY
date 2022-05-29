@@ -43,6 +43,8 @@
 		/* Handle on hover */
 		::-webkit-scrollbar-thumb:hover {
 			background: #8f8f8f; 
+		} input[type="radio"] {
+			display: none; 
 		}
 	</style>
 </head>
@@ -50,14 +52,69 @@
 <body>
 	<p id="backbutton"><a href="{% url 'shifter1' %}"><img src="{% static 'CRS/images/Applicants/Students/Shifter/back.png'%}" alt="back" width="35px" height="35px"> </a> <!--Applicants/Students/Shifter/shifter1.html--> </p>
 	<div id="roundbg">
-		<picture> <p id="imageSubmit"><img src="{% static 'CRS/images/Applicants/Students/Shifter/clip.png'%}" alt="clip" width="230px height="230px" class="rounded mx-auto d-block align-middle"> </p> </picture>
-			<div id="GWA">GWA Qualification</div>
-	           <div id="SubSS"> Enter previous semester's GWA <span style="color:#ff0000"><b>*</b></span></div>
-	           <form method ="POST">
-	           	{% csrf_token %}
-				<input type="text" id="input" name="GWA" required> <!--DB GWA -->
-	           	<a> <button id="homebutton"> Submit </button> </a> <!--Applicants/Students/Shifter/shifter3.html--> <!--Applicants/Students/Shifter/shifter3.2.html--> </form>            
-	           </div>
+		<picture> <p id="imageSubmit"><img src="{% static 'CRS/images/Applicants/Students/Shifter/clip.png'%}" alt="clip" width="230px height="230px" class="rounded mx-auto d-block align-middle"></p> </picture>
+			<form method ="POST">
+				<div id="GWA">GWA Qualification</div><br><br><br><br>
+				<div id="SubSS"> Enter previous semester's GWA <span style="color:#ff0000"><b>*</b></span></div>
+	           	{% csrf_token %}<br><br><br><br>
+				<input type="text" id="input" name="GWA" required> <!--DB GWA --><br><br>
+                
+				
+				
+				<center>
+					<br>
+					<br>
+					<br>
+					<br>
+					<input type="checkbox" class="form-check-input" name="course" id="BSIT" value="BSIT" autocomplete="off" >
+						<label class="form-check-label" for="BSIT">BSIT &nbsp &nbsp &nbsp&nbsp</label>
+						<input type="checkbox" class="form-check-input" name="course" id="BSEE" value="BSEE" autocomplete="off" >
+						<label class="form-check-label" for="BSEE">BSEE</label>
+				</center>
+
+				 
+
+
+
+
+			<button id="homebutton" onclick="submitbtn()"> Submit </button><!--Applicants/Students/Shifter/shifter3.html--> <!--Applicants/Students/Shifter/shifter3.2.html-->          
+			</form>
+
+
+			
+
+			<p id="checking"></p>
+
+			<script>
+				function submitbtn(){
+					let course = document.forms[0];
+					let txt = "";
+					let i;
+					var gwa = parseFloat(document.getElementById("input").value)
+
+					for (i=0; i < course.length; i++){
+						if (course[i].checked)
+						txt = txt + course[i].value + "";
+
+					}
+
+					if (gwa <= 2.5 && txt == "BSIT"){
+						window.open("shifter3.html","_self")
+					}
+					else if (gwa >= 2.5 && txt == "BSIT"){
+						window.open("shifter3.2.html","_self")
+					}
+					else if (gwa <= 2 && txt == "BSEE"){
+						window.open("shifter3.html","_self")
+					}
+					else if (gwa >= 2 && txt == "BSEE"){
+						window.open("shifter3.2.html","_self")
+					}
+
+				}
+					
+			</script>
+
  <!-- tether, jQuery first, then Tether, then Bootstrap JS. -->
     <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>   
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>

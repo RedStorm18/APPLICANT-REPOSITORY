@@ -696,11 +696,14 @@ class FacultyApplicant(models.Model):
     middleName = models.CharField(max_length=150)
     email = models.EmailField()
     phoneNumber = models.CharField(max_length=150)
+    sex = models.CharField(max_length=150)
     department = models.CharField(max_length=100, verbose_name="Department", null=True)
+    time = models.CharField(max_length=100, verbose_name="Available Time", null=True)
     CV = models.FileField(upload_to='facultyApplicant/', blank=True, null=True)
     certificates = models.FileField(upload_to='facultyApplicant/', blank=True, null=True)
     credentials = models.FileField(upload_to='facultyApplicant/', blank=True, null=True)
     TOR = models.FileField(upload_to='facultyApplicant/', blank=True, null=True)
+    PDS = models.FileField(upload_to='facultyApplicant/', blank=True, null=True)
     remarks = models.CharField(max_length=150, default='Submitted', verbose_name='Status')
 
     class Meta:
@@ -709,7 +712,14 @@ class FacultyApplicant(models.Model):
     def __str__(self):
         return self.email
 
+#----------------------------WORK EXPERIENCE SHEET-------------------------------------------------
 
+    durationwork = models.CharField(max_length=150)
+    positionwork = models.CharField(max_length=150)
+    officeunit = models.CharField(max_length=150)
+    agencyorg = models.CharField(max_length=150)
+    accomplishments = models.FileField(upload_to='facultyApplicant/', blank=True, null=True)
+    summaryduties = models.FileField(upload_to='facultyApplicant/', blank=True, null=True)
 
 # ---------------------------Saving and Creating Users----------------- ---------------------------
 @receiver(post_save, sender=User)

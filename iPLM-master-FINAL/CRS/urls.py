@@ -246,18 +246,19 @@ urlpatterns = [
     
 
     # Faculty
-    url(r'^fHome/$', views.fHome, name='fHome'),
-    url(r'^fProfile/$', views.fProfile, name='fProfile'),
-    url(r'^fHomeNotification/$', views.fHomeNotification, name='fHomeNotification'),
-    url(r'^fProfileEdit/$', views.fProfileEdit, name='fProfileEdit'),
-    url(r'^fProfileChangePass/$', views.fProfileChangePass, name='fProfileChangePass'),
-    url(r'^parttime_sched/$', views.parttime_sched, name='parttime_sched'),
-    url(r'^fStudents_advisory/$', views.fStudents_advisory, name='fStudents_advisory'),
-    path(r'^viewstudent/<sched_id>$', views.fviewstudent, name='viewstudent'),
-    url(r'^fStudents_viewStudentGrade/$', views.fStudents_viewStudentGrade, name='fStudents_viewStudentGrade'),
-    url(r'^fViewSched/$', views.fViewSched, name='fViewSched'),
-    path(r'^fStudents_viewStudentGrade/<stud_id>$', views.fStudents_viewStudentGrade, name='fStudents_viewStudentGrade'),
-     
+     url(r'^applicant/$', views.applicant, name='applicant'),
+    url(r'^admin/$', views.applicant, name='admin'),
+    url(r'^faculty_applicant/$', views.faculty_applicant, name='faculty_applicant'),
+    url(r'^applicant_facultyapplicationform/$', views.applicant_facultyapplicationform, name='applicant_facultyapplicationform'),
+    url(r'^applicant_facultyapplicationform_workexpsheet/$', views.applicant_facultyapplicationform_workexpsheet, name='applicant_facultyapplicationform_workexpsheet'),
+    url(r'^applicant_facultyapplicationform_workexpsheet_submitted/$', views.applicant_facultyapplicationform_workexpsheet_submitted, name='applicant_facultyapplicationform_workexpsheet_submitted'),
+    url(r'^applicant_successfullysubmitted/$', views.applicant_successfullysubmitted, name='applicant_successfullysubmitted'),
+    url(r'^applicantrequirements/$', views.applicantrequirements, name='applicantrequirements'),
+    url(r'^faculty_applicant_form/$', views.faculty_applicant_form, name='faculty_applicant_form'),
+    url(r'^faculty_applicant_form_submitted/$', views.faculty_applicant_form_submitted, name='faculty_applicant_form_submitted'),
+    url(r'^cOthers-partTime/$',views.pta_request, name='cOthers-partTime'),
+    path(r'^cOthers-partTimeView/<pt_id>$',views.pta_view,name='cOthers-partTimeView'),
+   
     #STUDENT  PART
     url(r'^student/$', views.student, name='student'),
     url(r'^student_change_password/$', views.student_change_password, name='student_change_password'),

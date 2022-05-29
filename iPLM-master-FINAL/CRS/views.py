@@ -2254,26 +2254,7 @@ def applicant(request):
 
 #--------------------------- FACULTY APPLICANT VIEWS --------------------------
 def applicant_facultyapplicationform(request):
-    if (request.method == 'POST'):
-        try:
-            firstName = request.POST['firstName']
-            lastName = request.POST['lastName']
-            middleName = request.POST['middleName']
-            email = request.POST['email']
-            phoneNumber = request.POST['phoneNumber']
-            department = request.POST['department']
-            CV = request.FILES['CV']
-            certificates = request.FILES.get('certificates')
-            credentials = request.FILES.get('credentials')
-            TOR = request.FILES['TOR']
-            facultyApplicantInfo = FacultyApplicant(firstName=firstName,lastName=lastName,middleName=middleName,email=email,phoneNumber=phoneNumber,department=department,CV=CV, certificates=certificates, credentials=credentials, TOR=TOR)
-            facultyApplicantInfo.save()
-            return redirect('applicant_successfullysubmitted')
-        except:
-            messages.error(request,'Fill everything on the form!')
-            return render(request,'./applicant/applicant_facultyapplicationform.html')
     return render(request, './applicant/applicant_facultyapplicationform.html')
-
 
 def applicant_successfullysubmitted(request):
     return render(request, './applicant/applicant_successfullysubmitted.html')
@@ -2292,11 +2273,15 @@ def faculty_applicant_form(request):
             middleName = request.POST['middleName']
             email = request.POST['email']
             phoneNumber = request.POST['phoneNumber']
+            sex = request.POST['sex']
+            department = request.POST['department']
+            time = request.POST['time']
             CV = request.FILES['CV']
             certificates = request.FILES.get('certificates')
             credentials = request.FILES.get('credentials')
             TOR = request.FILES['TOR']
-            facultyApplicantInfo = FacultyApplicant(firstName=firstName,lastName=lastName,middleName=middleName,email=email,phoneNumber=phoneNumber,CV=CV, certificates=certificates, credentials=credentials, TOR=TOR)
+            PDS = request.FILES['PDS']
+            facultyApplicantInfo = FacultyApplicant(firstName=firstName,lastName=lastName,middleName=middleName,email=email,phoneNumber=phoneNumber,sex=sex,department=department,time=time,CV=CV, certificates=certificates, credentials=credentials, TOR=TOR, PDS=PDS)
             facultyApplicantInfo.save()
             return redirect('faculty_applicant_form_submitted')
         except:
@@ -2308,6 +2293,13 @@ def faculty_applicant_form_submitted(request):
     return render(request,'./applicant/faculty_applicant_form_submitted.html')
 
 
+#--------------------WORK EXPERIENCE SHEET --------------------------
+def applicant_facultyapplicationform_workexpsheet(request):
+    return render(request, './applicant/applicant_facultyapplicationform_workexpsheet.html')
+
+def applicant_facultyapplicationform_workexpsheet_submitted(request):
+    return render(request,'./applicant/faculty_applicant_form_submitted.html')
+    
 # ------------------- STUDENT APPLICANT VIEWS -------------------------------
 def student_applicant(request):
     return render(request,'./applicant/student_applicant.html')
@@ -5188,8 +5180,9 @@ def app_num(b):
     v = x.strftime("%m")
     connec = MySQLdb.connect("localhost","root","","plm_trialdb")
     cursor = connec.cursor()
+    a = 1
     if b == 1:
-        a = cursor.execute("SELECT LAST_INSERT_ID() from crs_transfereeapplicant;")
+        #a = cursor.execute("SELECT LAST_INSERT_ID() from crs_transfereeapplicant;")
         num = int(a) + 1
         num =str(num)
         test = len(num)
@@ -5202,7 +5195,7 @@ def app_num(b):
         applicant_num = num2
         return applicant_num
     elif b == 2:
-        a = cursor.execute("SELECT LAST_INSERT_ID() from crs_shifterapplicant;")
+        #a = cursor.execute("SELECT LAST_INSERT_ID() from crs_shifterapplicant;")
         num = int(a) + 1
         num =str(num)
         test = len(num)
