@@ -5182,7 +5182,7 @@ def app_num(b):
     cursor = connec.cursor()
     a = 1
     if b == 1:
-        #a = cursor.execute("SELECT LAST_INSERT_ID() from crs_transfereeapplicant;")
+        a = cursor.execute("SELECT LAST_INSERT_ID() from crs_transfereeapplicant;")
         num = int(a) + 1
         num =str(num)
         test = len(num)
@@ -5195,7 +5195,7 @@ def app_num(b):
         applicant_num = num2
         return applicant_num
     elif b == 2:
-        #a = cursor.execute("SELECT LAST_INSERT_ID() from crs_shifterapplicant;")
+        a = cursor.execute("SELECT LAST_INSERT_ID() from crs_shifterapplicant;")
         num = int(a) + 1
         num =str(num)
         test = len(num)
@@ -5215,6 +5215,8 @@ t_num = app_num(1)
 s_num = app_num(2)
 t_mail = "a"
 s_mail = "a"
+s_dept = "a"
+t_dept = "a"
 # note: DO NOT READJUST ABOVE VARIABLES ^^ 
 
 
@@ -5293,12 +5295,23 @@ def shifter2(request):
     return render(request, './applicant/shifter2.html')
 
 def shifter2(request):
+    global s_dept
     if (request.method == 'POST'):
         GWA = float(request.POST.get('GWA'))
-        if (GWA <= 2.25 and GWA >= 1):
-            return redirect('shifter3')
+        dept = request.POST.get("dept")
+        if (dept == None):
+            messages.error(request,'Please choose a department')
+
         else:
-            return redirect('shifter3.2')
+            s_dept = dept
+            if (GWA <= 2.75 and GWA >= 1 and dept == "BSIT"):
+                return redirect('shifter3')
+            if (GWA <= 2.25 and GWA >= 1 and dept == "BSEE"):
+                return redirect('shifter3')
+            else:
+                messages.error(request,'GWA is not Qualified')
+
+
     return render(request, './applicant/shifter2.html')
 
 def shifter3(request):
@@ -5308,7 +5321,7 @@ def shifter3_2(request):
     return render(request, './applicant/shifter3.2.html')
 
 def shifter9(request):
-    global s_mail
+    global s_mail, s_dept
     if (request.method == 'POST'):
         applicant_num = app_num(2)
         pw = str(applicant_num)
@@ -5333,14 +5346,15 @@ def shifter9(request):
         log.save()
         try:
             studentID = request.POST.get("StudID")
-            department = request.POST.get("Deg")
+            sex = request.POST.get("sex")
+            department = s_dept
             eadd = request.POST.get("eadd")
             cnum = request.POST.get("cnum")
             studentshifterletter = request.FILES.get("LetterofIntentFile")
             studentGrade = request.FILES.get("GradeScreenshotFile")
             studentStudyplan = request.FILES.get("studyPlanFile")
             shifter_dateSubmitted = timezone.now()
-            shiftee = ShifterApplicant(studentID=studentID, department=department, lname=lname, fname=fname, mname=mname, eadd=eadd, cnum=cnum, studentshifterletter=studentshifterletter, studentGrade=studentGrade, studentStudyplan=studentStudyplan,shifter_dateSubmitted=shifter_dateSubmitted, applicant_num=applicant_num)
+            shiftee = ShifterApplicant(studentID=studentID, department=department, lname=lname, fname=fname, mname=mname, eadd=eadd, cnum=cnum, studentshifterletter=studentshifterletter, studentGrade=studentGrade, studentStudyplan=studentStudyplan,shifter_dateSubmitted=shifter_dateSubmitted, applicant_num=applicant_num, sex=sex)
             shiftee.save()
             return redirect('shifter10')
         except:          

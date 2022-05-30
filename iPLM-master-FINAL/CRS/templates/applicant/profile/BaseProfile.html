@@ -52,9 +52,7 @@
     border-radius: 15px;
     color: white;
     box-shadow: 0 0 10px rgb(216, 216, 216);
-    margin-top: 50px;
-    margin-left: 1100px;
-    margin-bottom: 10px;
+    bottom: 100px;
     animation: zoom-in-zoom-out 1s ease;
     }
 
@@ -244,6 +242,7 @@
 		top: 518px;
 		left: 740px;
 	}
+    
     </style>
 </head>
 
@@ -274,24 +273,7 @@
                 <!--Profile-->
                 <div class="sub-box row">
                     <p class="text-profile">Profile</p>
-                    {% if messages %}
-                    {% for message in messages %}
-                    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-                    <div class="alertError">
-                        <span class="closebtnError" onclick="this.parentElement.style.display='none';">&times;</span> 
-                        {{ message }}
-                    </div>
-                    {% endif %}
-
-                    {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
-                    <div class="alertSuccess">
-                        <span class="closebtnSuccess" onclick="this.parentElement.style.display='none';">&times;</span> 
-                        {{ message }}
-                    </div>
-                    {% endif %}
-                        
-                    {% endfor %}
-                    {% endif %}
+                    
                 </div>
                 <div class="profile-box row">
                     
@@ -303,7 +285,19 @@
                 <!--END of Profile-->
                 <br><br>
                 <div class="profile-border row">
+                    
                     <div class="col-12-lg">
+                        {% if messages %}
+                    {% for message in messages %}
+                    {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                    <div class="alertSuccess">
+                        <span class="closebtnSuccess" onclick="this.parentElement.style.display='none';">&times;</span> 
+                        {{ message }}
+                    </div>
+                    {% endif %}
+                        
+                    {% endfor %}
+                    {% endif %}
                     </div>
                 </div>
 
@@ -326,9 +320,11 @@
 
 
                     <div class="col-lg-5 img">
+                    
                         <!-- style="background-color: purple"-->
                         <img src="{% static 'CRS/images/sHome/view_profile_img.png' %}" width="100%" height="400">
                     </div>
+                    
                 </div>
                 <!--END of Edit Account-->
 

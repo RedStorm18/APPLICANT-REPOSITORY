@@ -624,6 +624,8 @@ class ShifterApplicant(models.Model):
     signature1 = models.ImageField(upload_to='ShifterSign/', null=True, blank=True)
     signature2 = models.ImageField(upload_to='ShifterSign/', null=True, blank=True)
     applicant_num = models.CharField(max_length=10, verbose_name="applicant_num", null=True)
+    sex = models.CharField(max_length=100, verbose_name="sex", null=True)
+
     # dateApproved = models.DateTimeField()
 
     class Meta:
@@ -652,6 +654,7 @@ class TransfereeApplicant(models.Model):
     signature1 = models.ImageField(upload_to='TransfereeSign/', null=True, blank=True)
     signature2 = models.ImageField(upload_to='TransfereeSign/', null=True, blank=True)
     applicant_num = models.CharField(max_length=10, verbose_name="applicant_num", null=True)
+    sex = models.CharField(max_length=100, verbose_name="sex", null=True)
     # dateApproved = models.DateTimeField()
 
     class Meta:
@@ -691,12 +694,12 @@ class studentScheduling(models.Model):
 
 # --------------------------- Faculty Applicant Database ---------------------------------------
 class FacultyApplicant(models.Model):
-    lastName = models.CharField(max_length=150)
-    firstName = models.CharField(max_length=150)
-    middleName = models.CharField(max_length=150)
-    email = models.EmailField()
-    phoneNumber = models.CharField(max_length=150)
-    sex = models.CharField(max_length=150)
+    lastName = models.CharField(max_length=100, verbose_name="Last Name", null=True)
+    firstName = models.CharField(max_length=100, verbose_name="First Name", null=True)
+    middleName = models.CharField(max_length=100, verbose_name="Middle Name", null=True)
+    email = models.CharField(max_length=100, verbose_name="email", null=True)
+    phoneNumber = models.CharField(max_length=100, verbose_name="phoneNumber", null=True)
+    sex = models.CharField(max_length=100, verbose_name="sex", null=True)
     department = models.CharField(max_length=100, verbose_name="Department", null=True)
     time = models.CharField(max_length=100, verbose_name="Available Time", null=True)
     CV = models.FileField(upload_to='facultyApplicant/', blank=True, null=True)
@@ -714,10 +717,10 @@ class FacultyApplicant(models.Model):
 
 #----------------------------WORK EXPERIENCE SHEET-------------------------------------------------
 
-    durationwork = models.CharField(max_length=150)
-    positionwork = models.CharField(max_length=150)
-    officeunit = models.CharField(max_length=150)
-    agencyorg = models.CharField(max_length=150)
+    durationwork = models.CharField(max_length=100, verbose_name="Durationwork", null=True)
+    positionwork = models.CharField(max_length=100, verbose_name="positionwork", null=True)
+    officeunit = models.CharField(max_length=100, verbose_name="office unit", null=True)
+    agencyorg = models.CharField(max_length=100, verbose_name="agency", null=True)
     accomplishments = models.FileField(upload_to='facultyApplicant/', blank=True, null=True)
     summaryduties = models.FileField(upload_to='facultyApplicant/', blank=True, null=True)
 

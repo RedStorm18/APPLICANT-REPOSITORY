@@ -14,12 +14,20 @@
 
     <link rel="stylesheet" type="text/css" href="{% static 'CRS/css/Applicants/Students/Shifter/shifter2.css' %}">
     <script src="{% static 'CRS/js/Applicants/Students/Shifter/shifter2.js' %}"> </script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
 	<!--  ICON -->
     <link rel="icon" href="{% static '/CRS/images/cHome/iPLM.png' %}" type="image/png" sizes="16x16">
 
 	<style>
-
+		#imageSubmit
+	{
+		position:absolute;
+		top:     0px;
+		left:    400px;
+		width:   280px;
+        height:  100px;
+	}
 	body {
 			overflow-x: hidden;
 		}
@@ -46,71 +54,205 @@
 		} input[type="radio"] {
 			display: none; 
 		}
+
+		#GWA{
+			top: 175px;
+			left: 445px;
+			text-align: center;
+		}
+		#buttons{
+		font-size:18px;
+		font-family:Nunito;
+		color: #0C66CC;
+		position:absolute;
+		top: 220px;
+		left: 445px;
+		text-align: center;
+		}
+		button{
+		font-family: Nunito;
+		color: #0C66CC;
+		background-color: transparent;
+    	background-repeat: no-repeat;
+    	border-color:#0C66CC ;
+    	cursor: pointer;
+    	overflow: hidden;
+    	outline: none;
+		}
+		
+		#greet{
+		font-size:15px;
+		font-family:Nunito;
+		color: #0C66CC;
+		position:absolute;
+		top: 260px;
+		left: 435px;
+		text-align: center;
+		}
+/*RADIO BUTTON STYLES*/
+.donate-now {
+  list-style-type: none;
+  margin: 0 0 0 0;
+  padding: 0;
+}
+
+.donate-now li {
+  float: left;
+  margin: 0 20px 0 0;
+  width: 80px;
+  height: 40px;
+  position: relative;
+}
+
+.donate-now label,
+.donate-now input {
+  display: block;
+  position: absolute;
+  font-size: 17px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.donate-now input[type="radio"] {
+  opacity: 0.01;
+  z-index: 100;
+}
+
+.donate-now input[type="radio"]:checked+label,
+.Checked+label {
+  background: #0C66CC ;
+  color: white;
+  
+}
+
+.donate-now label {
+  padding: 5px;
+  border: 1px solid #CCC;
+  cursor: pointer;
+  z-index: 90;
+}
+
+.donate-now label:hover {
+  background: #DDD;
+}
+		
+
+.alert{
+        padding: 10px;
+        background-color: #ff5f02;
+        border-radius: 10px;
+        color: white;
+        margin-top: 10px;	
+        animation: zoom-in-zoom-out 1s ease;
+        border: none;
+        font-size: 12px;
+        width: 200px;
+		top: 320px;
+		left: 440px
+        }
+
+.closebtn {
+        margin-left: 15px;
+        color: white;
+        font-weight: bold;
+        float: right;
+        font-size: 22px;
+        line-height: 20px;
+        cursor: pointer;
+        transition: 0.3s;
+        margin-top: -5px;
+        }
+
+
 	</style>
 </head>
 
 <body>
 	<p id="backbutton"><a href="{% url 'shifter1' %}"><img src="{% static 'CRS/images/Applicants/Students/Shifter/back.png'%}" alt="back" width="35px" height="35px"> </a> <!--Applicants/Students/Shifter/shifter1.html--> </p>
 	<div id="roundbg">
-		<picture> <p id="imageSubmit"><img src="{% static 'CRS/images/Applicants/Students/Shifter/clip.png'%}" alt="clip" width="230px height="230px" class="rounded mx-auto d-block align-middle"></p> </picture>
-			<form method ="POST">
-				<div id="GWA">GWA Qualification</div><br><br><br><br>
-				<div id="SubSS"> Enter previous semester's GWA <span style="color:#ff0000"><b>*</b></span></div>
+		<picture> <p id="imageSubmit"><img src="{% static 'CRS/images/Applicants/Students/Shifter/clip.png'%}" alt="clip" width="230px" height="180px" class="rounded mx-auto d-block align-middle"></p> </picture>
+		
+				<div id="GWA">GWA Qualification
+				</div>
+					<br>
+					<p></p>
+					<form method ="POST">
+					<div id="buttons">
+					<ul class="donate-now">
+						<li>
+						  <input type="radio" id="BSIT" name="dept" value="BSIT" onclick="ITREQ()">
+						  <label for="BSIT">BSIT</label>
+						</li>
+						<li>
+						  <input type="radio" id="BSEE" name="dept" value ="BSEE" onclick="EEREQ()">
+						  <label for="BSEE">BSEE</label>
+						</li>
+					  </ul>
+					</div>
+<!--
+					<button onclick="ITREQ()" name = "dept" value = "BSIT" id="dept">BSIT</button>
+					<button onclick="EEREQ()" id = "dept">BSEE</button>
+					<br>	
+-->
+					<div id="greet">
+					<p id ="req"></p>
+					</div>
+				
+					
+				<div id="SubSS"><br><br><br> Enter previous semester's GWA <span style="color:#ff0000"><b>*</b></span></div>
+				<div id = "mess">
+					{% if messages %}
+					{% for message in messages %}
+						<div class="alert">
+						<span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+						{{ message }}
+						</div>
+					{% endfor %}
+					{% endif %}
+
+
+				</div>
 	           	{% csrf_token %}<br><br><br><br>
 				<input type="text" id="input" name="GWA" required> <!--DB GWA --><br><br>
                 
-				
-				
-				<center>
-					<br>
-					<br>
-					<br>
-					<br>
-					<input type="checkbox" class="form-check-input" name="course" id="BSIT" value="BSIT" autocomplete="off" >
-						<label class="form-check-label" for="BSIT">BSIT &nbsp &nbsp &nbsp&nbsp</label>
-						<input type="checkbox" class="form-check-input" name="course" id="BSEE" value="BSEE" autocomplete="off" >
-						<label class="form-check-label" for="BSEE">BSEE</label>
-				</center>
-
-				 
 
 
-
-
-			<button id="homebutton" onclick="submitbtn()"> Submit </button><!--Applicants/Students/Shifter/shifter3.html--> <!--Applicants/Students/Shifter/shifter3.2.html-->          
-			</form>
-
-
-			
-
+			<button id="homebutton" type="submit"  onclick="submitbtn()"> Submit </button><!--Applicants/Students/Shifter/shifter3.html--> <!--Applicants/Students/Shifter/shifter3.2.html-->          
+					</form>
 			<p id="checking"></p>
 
 			<script>
-				function submitbtn(){
-					let course = document.forms[0];
-					let txt = "";
-					let i;
-					var gwa = parseFloat(document.getElementById("input").value)
+				/*function submitbtn(){
+					val = document.getElementById('input').value;
+					dept = document.querySelector('input[type="radio"]:checked').value;
+					if (dept != null){
+						if (dept == 'BSIT' && val >2.75){
+							alert('GWA is not qualified');
+						}
+						else if (dept == 'BSEE' && val >2.25){
+							alert('GWA is not qualified');
+						}
 
-					for (i=0; i < course.length; i++){
-						if (course[i].checked)
-						txt = txt + course[i].value + "";
-
 					}
-
-					if (gwa <= 2.5 && txt == "BSIT"){
-						window.open("shifter3.html","_self")
+					else{
+						alert('Nothing is selected');
 					}
-					else if (gwa >= 2.5 && txt == "BSIT"){
-						window.open("shifter3.2.html","_self")
-					}
-					else if (gwa <= 2 && txt == "BSEE"){
-						window.open("shifter3.html","_self")
-					}
-					else if (gwa >= 2 && txt == "BSEE"){
-						window.open("shifter3.2.html","_self")
-					}
-
+				}
+*/
+				/*
+				$('button').on('click', function(){
+					$('button').removeClass('selected');
+					$(this).addClass('selected');
+				});
+*/
+				
+				function ITREQ(){
+					document.getElementById("req").innerHTML = "GWA REQUIREMENT IS 2.75";
+				}
+				function EEREQ(){
+					document.getElementById("req").innerHTML ="GWA REQUIREMENT IS 2.25";
 				}
 					
 			</script>
