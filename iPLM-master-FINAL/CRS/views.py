@@ -5228,28 +5228,31 @@ def transferee_2GWA(request):
     return render(request, './applicant/transferee_2GWA.html')
 
 def transferee_2GWA(request):
+    global t_dept
     if (request.method == 'POST'):
         GWA = float(request.POST.get('GWA'))
-        if (GWA <= 2.25 and GWA >= 1):
-            return redirect('transferee_3GWAQual')
+        dept = request.POST.get("dept")
+        t_dept = dept
+        if (dept == None):
+            messages.error(request,'Please choose a department')
+
         else:
-            return redirect('transferee_3.2GWANotQual')
+            if (GWA <= 2.75 and GWA >= 1 and dept == "BSIT"):
+                return redirect('transferee_9applicationform')
+            if (GWA <= 2.25 and GWA >= 1 and dept == "BSEE"):
+                return redirect('transferee_9applicationform')
+            else:
+                messages.error(request,'GWA is not Qualified')
     return render(request, './applicant/transferee_2GWA.html')
-
-def transferee_3GWAQual(request):
-    return render(request, './applicant/transferee_3GWAQual.html')
-
-def transferee_3_2GWANotQual(request):
-    return render(request, './applicant/transferee_3.2GWANotQual.html')
 
 
 def transferee_9applicationform(request):
-    global t_mail
+    global t_mail, t_dept
     if (request.method == 'POST'):
         studentID = request.POST.get("StudentNumber")
         applicant_num = app_num(1)
         pw = str(applicant_num)
-        department = request.POST.get("degree")
+        department = t_dept
         lname = request.POST.get("LastName")
         fname = request.POST.get("FirstName")
         mname = request.POST.get("MiddleName")
@@ -5268,6 +5271,7 @@ def transferee_9applicationform(request):
         log.save()
         try:
             eadd = request.POST.get("EmailAddress")
+            sex = request.POST.get("sex")
             cnum = request.POST.get("Phone")
             studentStudyplan = request.FILES.get("studyPLan")
             studentNote = request.FILES.get("NoteofUndertaking")
@@ -5275,7 +5279,7 @@ def transferee_9applicationform(request):
             studentGoodmoral = request.FILES.get("GoodMoral")
             studentGrade = request.FILES.get("Grades")
             transfer_dateSubmitted = timezone.now()
-            transferee = TransfereeApplicant(studentID=studentID, department=department, lname=lname, fname=fname, mname=mname, eadd=eadd, cnum=cnum, studentStudyplan=studentStudyplan, studentNote=studentNote, studentHD=studentHD, studentGoodmoral=studentGoodmoral, studentGrade=studentGrade,transfer_dateSubmitted=transfer_dateSubmitted, applicant_num=applicant_num)
+            transferee = TransfereeApplicant(studentID=studentID, department=department, lname=lname, fname=fname, mname=mname, eadd=eadd, cnum=cnum, studentStudyplan=studentStudyplan, studentNote=studentNote, studentHD=studentHD, studentGoodmoral=studentGoodmoral, studentGrade=studentGrade,transfer_dateSubmitted=transfer_dateSubmitted, applicant_num=applicant_num, sex=sex)
             transferee.save()
             return redirect('transferee_10success')
         except:          
@@ -5288,9 +5292,6 @@ def transferee_10success(request):
     return render(request, './applicant/transferee_10success.html',{'num':t_num, 'mail':t_mail})
 
 #SHIFTER APPLICANT
-def shifter1(request):
-    return render(request, './applicant/shifter1.html')
-
 def shifter2(request):
     return render(request, './applicant/shifter2.html')
 
@@ -5305,20 +5306,15 @@ def shifter2(request):
         else:
             s_dept = dept
             if (GWA <= 2.75 and GWA >= 1 and dept == "BSIT"):
-                return redirect('shifter3')
+                return redirect('shifter9')
             if (GWA <= 2.25 and GWA >= 1 and dept == "BSEE"):
-                return redirect('shifter3')
+                return redirect('shifter9')
             else:
                 messages.error(request,'GWA is not Qualified')
 
 
     return render(request, './applicant/shifter2.html')
 
-def shifter3(request):
-    return render(request, './applicant/shifter3.html')
-
-def shifter3_2(request):
-    return render(request, './applicant/shifter3.2.html')
 
 def shifter9(request):
     global s_mail, s_dept

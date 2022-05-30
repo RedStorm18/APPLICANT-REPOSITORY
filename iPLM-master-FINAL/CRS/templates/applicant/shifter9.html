@@ -68,7 +68,11 @@
 
 		.donate-now input[type="radio"] {
 		opacity: 0.01;
-		z-index: 100;
+		position: absolute;
+		width: 100%;
+		border: 0px;
+		height: 2em;
+		z-index: 120;
 		}
 
 		.donate-now input[type="radio"]:checked+label,
@@ -130,7 +134,7 @@
 			}
 			var x = document.querySelector('input[type="radio"]:checked');
 			if ( x == null) {
-				errormessage += "Please select a Gender\n Please Refresh page";
+				errormessage += "Please select a Sex\n";
 			}
 			if (errormessage != ""){
 			alert(errormessage)
@@ -142,7 +146,7 @@
 </head>
 
 <body>
-	<div id="backbutton"><a href="{% url 'shifter3' %}"><img src="{% static 'CRS/images/Applicants/Students/Shifter/back.png'%}" alt="iplm" width="35px" height="35px"></a></div>
+	<div id="backbutton"><a href="{% url 'shifter2' %}"><img src="{% static 'CRS/images/Applicants/Students/Shifter/back.png'%}" alt="iplm" width="35px" height="35px"></a></div>
 	<div id="roundbg">
 	<p id="StudentApplicationFormTitle">Student Application Form</p>
 	<p id="SAFSub">Please complete the form below to be admitted in our department.</p> 
