@@ -41,69 +41,19 @@
 		::-webkit-scrollbar-thumb:hover {
 			background: #8f8f8f; 
 		}
-		.donate-now {
-		list-style-type: none;
-		margin: 0 0 0 0;
-		padding: 0;
-		}
 
-		.donate-now li {
-		float: left;
-		margin: 0 20px 0 0;
-		width: 80px;
-		height: 40px;
-		position: relative;
-		}
-
-		.donate-now label,
-		.donate-now input {
-		display: block;
-		position: absolute;
-		font-size: 17px;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		}
-
-		.donate-now input[type="radio"] {
-		opacity: 0.01;
-		position: absolute;
-		width: 100%;
-		border: 0px;
-		height: 2em;
-		z-index: 120;
-		}
-
-		.donate-now input[type="radio"]:checked+label,
-		.Checked+label {
-		background: #0C66CC ;
-		color: white;
-		
-		}
-
-		.donate-now label {
-		padding: 5px;
-		border: 1px solid #CCC;
-		border-radius: 20px;
-		cursor: pointer;
-		z-index: 90;
-		}
-
-		.donate-now label:hover {
-		background: #DDD;
-		}
-
-		#gender{
-		font-size:18px;
-		font-family:Nunito;
-		color: #0C66CC;
-		position:absolute;
-		top: 135px;
-		left: 531px;
-		text-align: center;
-		}
-		#studPlanShape1{
+		#roundbg
+	{
+		border-radius: 25px;
+		background: white;
+		width: 1100px;
+		height: 900px;
+		position:relative;
+		top: 100px;
+		left: 120px;
+	}
+		#req1Shape, #req2Shape, #req3Shape
+		{
 		border: 1px solid #0C66CC;
 		background: #0C66CC;
 		font-size: 14px;
@@ -118,10 +68,28 @@
 		justify-content: left;
 		position:absolute;
 		filter:drop-shadow(1px 1px 3px gray);
-		top: 695px;
+	}
+
+	#req1Shape
+	{
+		top: 698px;
 		left: 80px;
-		}
-		#college{
+	}
+
+	#req2Shape
+	{
+		top: 768px;
+		left: 80px;
+	}
+
+	#req3Shape
+	{
+		top: 838px;
+		left: 80px;
+	}
+
+	#req1file, #req2file, #req3file
+	{
 		font-family: Nunito;
 		font-size:14px;
 		background: white;
@@ -131,9 +99,38 @@
 		width: 210px;
 		outline: none;
 		position:absolute;
-		top: 695px;
+	}
+	#req1file
+	{
+		top: 698px;
 		left: 320px;
-		}
+	}
+
+	#req2file
+	{
+	    top: 768px;
+	    left: 320px;
+	}
+	#req3file
+	{
+		top: 838px;
+		left: 320px;
+	}
+	#subEmailAddress
+	{
+		top: 315px;
+		left: 27%;
+	}
+	#subPhone
+	{
+		top: 315px;
+		left: 49%;
+	}
+	#UDSub
+	{
+		top: 450px;
+		left: 80px;
+	}
 	</style>
 	<script>
 		function checkforblank()
@@ -163,45 +160,29 @@
 			if (document.getElementById('studyPlanFile').value == ""){
 			errormessage += "Upload your Studyplan File\n";
 			}
-			var x = document.querySelector('input[type="radio"]:checked');
-			if ( x == null) {
-				errormessage += "Please select a Sex\n";
-			}
 			if (errormessage != ""){
 			alert(errormessage)
 			return false;
 			}
-			
 		}
 	</script>
 </head>
 
 <body>
-	<div id="backbutton"><a href="{% url 'shifter2' %}"><img src="{% static 'CRS/images/Applicants/Students/Shifter/back.png'%}" alt="iplm" width="35px" height="35px"></a></div>
+	<div id="backbutton"><a href="{% url 'readmission1' %}"><img src="{% static 'CRS/images/Applicants/Students/Shifter/back.png'%}" alt="iplm" width="35px" height="35px"></a></div>
 	<div id="roundbg">
-	<p id="StudentApplicationFormTitle">Student Application Form</p>
+	<p id="StudentApplicationFormTitle">Re-Admission Application Form</p>
 	<p id="SAFSub">Please complete the form below to be admitted in our department.</p> 
 
 	<p id="StudentNumber">Student Information <span style="color:#ff0000"><b>*</b></span></p>
 	<form method ="POST" action="" enctype="multipart/form-data" onsubmit ="return checkforblank()">
 		{% csrf_token %}
 			<!--Student Number-->
-			<input type="text" id="StudNum" name="StudID" pattern="[0-9]{9}" placeholder="202010101" required>
+			<input type="text" id="StudNum" name="studentID" pattern="[0-9]{9}" placeholder="202010101" required>
 			<p id="subStudNum">Student Number</p>
-			<p id="subDegree">Sex</p>
-			<div id="gender">
-			<ul class="donate-now">
-				<li>
-				  <input type="radio" id="Male" name="sex" value="Male" >
-				  <label for="BSIT">Male</label>
-				</li>
-				<li>
-				  <input type="radio" id="Female" name="sex" value ="Female">
-				  <label for="BSEE">Female</label>
-				</li>
-			  </ul>
-			</div>
-			
+
+			<input type="text" id="degree" name="department" placeholder="BSIT/BSEE" required>
+			<p id="subDegree">Coruse Degree</p>
 
 	<p id="FullNametext">Full Name <span style="color:#ff0000"><b>*</b></span></p>
             <!--last name-->
@@ -217,7 +198,7 @@
 	<p id="ContactInformationText">Contact Information <span style="color:#ff0000"><b>*</b></span></p>
 			<!--email address-->
 			<input type="email" id="EmailAddress" name="eadd" placeholder="name@email.com" required>
-			<p id="subEmailAddress">Email Address</p>
+			<p id="subEmailAddress">PLM Email</p>
             <!--phone number-->
 			<input type="tel" id="Phone" name="cnum" pattern="[0-9]{11}" placeholder="09123456789" required>
 			<p id="subPhone">Phone Number</p>
@@ -226,20 +207,23 @@
 	<hr id="line2" color="#d3d3d3" width="980px">
 	<p id="UploadDocumentsTitle">Upload Documents</p>
 	<p id="UDSub">Please upload the following documents.</p>
-	<p id="LetterofIntentShape">&nbsp;&nbsp;&nbsp;&nbsp;Letter Of Intent</p>
-	<p id="GradeSSShape"> &nbsp;&nbsp;&nbsp;&nbsp; Grade Screenshot</p>	
-	<p id="studPlanShape"> &nbsp;&nbsp;&nbsp;&nbsp; Studyplan</p>	
-	<p id="studPlanShape1"> &nbsp;&nbsp;&nbsp;&nbsp; College Approval Letter</p>	
-
+	<p id="LetterofIntentShape">&nbsp;&nbsp;&nbsp;&nbsp;Studyplan</p>
+	<p id="GradeSSShape"> &nbsp;&nbsp;&nbsp;&nbsp; Shifter Letter</p>	
+	<p id="studPlanShape"> &nbsp;&nbsp;&nbsp;&nbsp; Grades</p>	
+	<p id="req1Shape">&nbsp;&nbsp;&nbsp;&nbsp;req1</p>
+	<p id="req2Shape"> &nbsp;&nbsp;&nbsp;&nbsp; req2</p>	
+	<p id="req3Shape"> &nbsp;&nbsp;&nbsp;&nbsp; req3</p>	
+	
      <!--Choose file-->       
-	<input type="file" id="LetterofIntentFile" name="LetterofIntentFile" accept=".pdf">
-	<input type="file" id="GradeScreenshotFile" name="GradeScreenshotFile" accept=".pdf">
-	<input type="file" id="studyPlanFile" name="studyPlanFile" accept=".pdf">
-	<input type="file" id="college" name="college" accept=".pdf">
-
+	<input type="file" id="LetterofIntentFile" name="studentStudyplan" accept=".pdf">
+	<input type="file" id="GradeScreenshotFile" name="studentshifterletter" accept=".pdf">
+	<input type="file" id="studyPlanFile" name="studentGrade" accept=".pdf">
+	<input type="file" id="req1file" name="stud" accept=".pdf">
+	<input type="file" id="req2file" name="studee" accept=".pdf">
+	<input type="file" id="req3file" name="req1" accept=".pdf">
 	<script>
-		const types = ["LetterofIntentFile", "GradeScreenshotFile", "studyPlanFile", "college"];
-		for(let x=0; x<5; x++){
+		const types = ["LetterofIntentFile", "GradeScreenshotFile", "studyPlanFile","req1file", "req2file","req3file"];
+		for(let x=0; x<7; x++){
 		var file = document.getElementById(types[x]);
 		file.onchange = function(e) {
 		var ext = this.value.match(/\.([^\.]+)$/)[1];
@@ -255,7 +239,7 @@
 	}
 	</script>
 	<picture><a><p id="imageForm"><img src="{% static 'CRS/images/Applicants/Students/Shifter/clip-1712.png'%}" alt="iplm" width="290px" height="230px"></a></p></picture>
-	<a> <button type="submit" value="Submit" id="submitbutton"> Submit </button></a>
+	<a href="{% url 'readmission3' %}"> <button type="submit" value="Submit" id="submitbutton"> Submit </button></a>
 	</form> </div>
 
 	<!-- tether, jQuery first, then Tether, then Bootstrap JS. -->

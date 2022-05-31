@@ -145,8 +145,16 @@
 		left: 500px;
 	}
 
+	#line2{
+		top:390px;
+	}
+	#UploadDocumentsTitle{
+		top:410px;
+	}
+	#UDSub{
+		top: 445px;
+	}
 </style>
-
 
 </head>
 
@@ -166,7 +174,7 @@
 			<p id="subLastname">Date</p>
 
 	<p id="ContactInformationText">Position in work<span style="color:#ff0000"><b>*</b></span></p>            <!--position work-->
-			<input type="text" id="EmailAddress" name="positionwork" placeholder="MASTER TEACHER I">
+			<input type="text" id="EmailAddress" name="position" placeholder="MASTER TEACHER I">
 			<p id="subEmailAddress">Position</p>
 	
 	<p id="DepartmentInformationText">Name of Office/Unit <span style="color:#ff0000"><b>*</b></span></p>            <!--office unit-->
@@ -191,9 +199,9 @@
 
      <!--Choose file-->
 
-	<input type="file" id="CVFile" name="accomplishments">
+	<input type="file" id="CVFile" name="accomplishments" accept=".pdf">
             
-	<input type="file" id="CertificateFile" name="summaryduties">
+	<input type="file" id="CertificateFile" name="summaryduties" accept=".pdf">
 
 	{% if messages %}
 	{% for message in messages %}
@@ -204,12 +212,42 @@
 	
 	
 	<picture><a><p id="imageForm"><img src="{% static 'CRS/images/Applicants/Faculty/clip-1712.png' %}" alt="iplm" width="290px" height="230px"></a></p></picture>
-
-</form> </div>
 	<a href="{% url 'applicant_facultyapplicationform_workexpsheet_submitted' %}"> <button id="submitbutton"> <!--templates/Applicants/Faculty--> Submit </button></a>
 
+</form> </div>
 
+<script>
+	function checkforblank() {
+	var errormessage = "";
+if (document.getElementById('LastName').value == "") {
+	errormessage += "Enter your Duration of Work\n";
+	}
 
+if (document.getElementById('EmailAddress').value == "") {
+	errormessage += "Enter your Position in work\n";
+	}
+
+if (document.getElementById('department').value == "") {
+	errormessage += "Enter Your Name of Office/Unit\n";
+	}
+
+if (document.getElementById('time').value == "") {
+	errormessage += "Name of Agency/Organization and Location\n";
+	}
+
+if (document.getElementById('CVFile').value == "") {
+	errormessage += "Upload your LIST OF ACCOMPLISHMENTS \n";
+	}
+if (document.getElementById('CertificateFile').value == "") {
+	errormessage += "Upload your Summary of duties\n";
+	}
+
+if (errormessage != "") {
+	alert(errormessage);
+	return false;
+	}
+}
+	</script>
 <!-- tether, jQuery first, then Tether, then Bootstrap JS. -->
     <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>   
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
