@@ -19,10 +19,6 @@ urlpatterns = [
     url(r'^Faculty_Applicant/$', views.FProfile, name='FProfile'),
     
     
-    #ReAdmission
-    url(r'^readmission1/$', views.readmission1, name='readmission1'),
-    url(r'^readmission2/$', views.readmission2, name='readmission2'),
-    url(r'^readmission3/$', views.readmission3, name='readmission3'),
 
     # Chairperson
     url(r'^chairperson/$', views.chairperson, name='chairperson'),

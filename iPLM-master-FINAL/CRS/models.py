@@ -668,34 +668,6 @@ class TransfereeApplicant(models.Model):
     # dateApproved = models.DateTimeField()
 
 
-# RE-ADMISSION APPLICANT
-class ReAdmissionApplicant(models.Model):
-    studentID = models.CharField(max_length=100, verbose_name="StudentNumber", null=True)
-    department = models.CharField(max_length=100, verbose_name="Department", null=True)
-    lname = models.CharField(max_length=100, verbose_name="LastName", null=True)
-    fname = models.CharField(max_length=100, verbose_name="FirstName", null=True)
-    mname = models.CharField(max_length=100, verbose_name="MiddleName", null=True)
-    eadd = models.CharField(max_length=100, verbose_name="EmailAddress", null=True)
-    cnum = models.CharField(max_length=100, verbose_name="ContactNumber", null=True)
-    studentStudyplan = models.FileField(upload_to='ReAdmissionSubmission/', blank=True, null=True)
-    studentCheckList = models.FileField(upload_to='ReAdmissionSubmission/', blank=True, null=True)
-    NoteOfUndertaking = models.FileField(upload_to='ReAdmissionSubmission/', blank=True, null=True)
-    ApprovedLOA = models.FileField(upload_to='ReAdmissionSubmission/', blank=True, null=True)
-    ReAdForm = models.FileField(upload_to='ReAdmissionSubmission/', blank=True, null=True)
-    LetterOfReAd = models.FileField(upload_to='ReAdmissionSubmission/', blank=True, null=True)
-    remarks = models.CharField(max_length=150, default='Submitted', verbose_name='Status')
-    shifter_dateSubmitted = models.DateField(default=now)
-    signature1 = models.ImageField(upload_to='ShifterSign/', null=True, blank=True)
-    signature2 = models.ImageField(upload_to='ShifterSign/', null=True, blank=True)
-    applicant_num = models.CharField(max_length=10, verbose_name="applicant_num", null=True)
-    # dateApproved = models.DateTimeField()
-
-    class Meta:
-        verbose_name_plural = "ReAdmission Applicants"
-
-    def str(self):
-        return '| %s  %s ' % (self.studentID, self.lname)
-
 
 # --------------------------- Faculty Applicant Database ---------------------------------------
 class FacultyApplicant(models.Model):

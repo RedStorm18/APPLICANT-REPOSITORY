@@ -5220,19 +5220,6 @@ def app_num(b):
             num2 = "F" + y + z +v +num
         applicant_num = num2
         return applicant_num
-    elif b == 4:
-        a = cursor.execute("SELECT LAST_INSERT_ID() from crs_readmissionapplicant;")
-        num = int(a) + 1
-        num =str(num)
-        test = len(num)
-        if test < 2:
-            num2 = "R" + y + z +v + "00" +num
-        elif test <3:
-            num2 = "R" + y + z +v + "0" +num
-        else:
-            num2 = "R" + y + z +v +num
-        applicant_num = num2
-        return applicant_num
     else:
         error = "ERROR"
         return error
@@ -5240,7 +5227,6 @@ def app_num(b):
 t_num = app_num(1)
 s_num = app_num(2)
 f_num = app_num(3)
-r_num = app_num(4)
 t_mail = "a"
 s_mail = "a"
 f_mail = "a"
@@ -5479,40 +5465,6 @@ def applicant_facultyapplicationform_workexpsheet_submitted(request):
 
 
 
-#-------------------- RE-ADMISSION --------------------------
-def readmission1(request):
-    return render(request, './applicant/readmission1.html')
-
-def readmission2(request):
-    if (request.method == 'POST'):
-        try:
-            applicant_num = app_num(4)
-            lname = request.POST.get("lname")
-            fname = request.POST.get("fname")
-            mname = request.POST.get("mname")
-            studentID = request.POST.get("studentID")
-            department = request.POST.get("department")
-            eadd = request.POST.get("eadd")
-            cnum = request.POST.get("cnum")
-            studentStudyplan = request.FILES.get("studentStudyplan")
-            studentCheckList = request.FILES.get("studentCheckList")
-            NoteOfUndertaking = request.FILES.get("NoteOfUndertaking")
-            ApprovedLOA = request.FILES.get("ApprovedLOA")
-            ReAdForm = request.FILES.get("ReAdForm")
-            LetterOfReAd = request.FILES.get("LetterOfReAd")
-            shifter_dateSubmitted = timezone.now()
-            readmission = ReAdmissionApplicant(studentID=studentID, department=department, lname=lname, fname=fname, mname=mname, eadd=eadd, cnum=cnum, studentStudyplan = studentStudyplan,shifter_dateSubmitted=shifter_dateSubmitted, applicant_num=applicant_num,LetterOfReAd = LetterOfReAd, ReAdForm = ReAdForm,ApprovedLOA = ApprovedLOA, NoteOfUndertaking = NoteOfUndertaking,studentCheckList = studentCheckList)
-            readmission.save()
-            return redirect('readmission3')
-        except:
-            messages.error(request,'You have already submitted an application!')
-            return render(request,'./applicant/readmission2.html')
-        
-    return render(request, './applicant/readmission2.html')
-
-
-def readmission3(request):
-    return render(request, './applicant/readmission3.html',{'app':r_num})
 
 #--------------------- APPLICANT PROFILE ----------------------------
 
