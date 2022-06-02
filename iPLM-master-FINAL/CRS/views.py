@@ -5388,6 +5388,7 @@ def GradesNotif(request):
 
 #APPLICANT PROFILE
 
+<<<<<<< Updated upstream
 def redir(request):
     global psw
     if request.user.is_authenticated and request.user.is_applicant:
@@ -5401,6 +5402,132 @@ def redir(request):
             pass
     else:
          return redirect('index')
+=======
+def applicantrequirements(request):
+    return render(request, './applicant/applicantrequirements.html')
+    
+def faculty_applicant(request):
+    return render(request, './applicant/faculty_applicant.html')
+
+def faculty_applicant_form(request):
+    return render(request, './faculty_applicant_form.html')
+    
+def faculty_applicant_form_submitted(request):
+    return render(request,'./applicant/faculty_applicant_form_submitted.html')
+
+def applicant_facultyapplicationform_workexpsheet_submitted(request):
+    return render(request,'./applicant/applicant_facultyapplicationform_workexpsheet_submitted.html',{'app':f_num, 'mail':f_mail})
+
+def applicant_facultyapplicationform(request):
+    global f_mail
+    if (request.method == 'POST'):
+        applicant_num = app_num(3)
+        pw = str(applicant_num)
+        firstName = request.POST.get("firstName")
+        lastName = request.POST.get("lastName")
+        middleName = request.POST.get("middleName")
+        first = firstName.lower()
+        middle = middleName.lower()
+        last = lastName.lower()
+        last = last.translate({ord(c): None for c in string.whitespace})
+        firstName = firstName.title()
+        middleName = middleName.title()
+        lastName = lastName.title()
+        f = first[0]
+        m = middle[0]
+        email = f + m + last +"@plm.edu.ph"
+        f_mail=email
+        User = get_user_model()
+        log = User.objects.create_user(email = email, password = pw, firstName = firstName, middleName = middleName, lastName = lastName)
+        log.is_admin = False
+        log.is_applicant = True
+        log.save()
+        try:
+            email = request.POST.get("email")
+            phoneNumber = request.POST.get("phoneNumber")
+            sex = request.POST.get("sex")
+            department = request.POST.get("department")
+            time = request.POST.get("time")
+            CV = request.FILES.get("CV")
+            certificates = request.FILES.get("certificates")
+            credentials = request.FILES.get("credentials")
+            TOR = request.FILES.get("TOR")
+            PDS = request.FILES.get("PDS")
+            facultyApplicantInfo = FacultyApplicant(firstName=firstName,lastName=lastName,middleName=middleName,email=email,phoneNumber=phoneNumber,sex= sex,department= department,time=time,CV=CV, certificates=certificates, credentials=credentials,TOR=TOR,PDS=PDS, applicant_num = applicant_num)
+            facultyApplicantInfo.save()
+            return redirect('applicant_facultyapplicationform_workexpsheet')
+        except:
+            messages.error(request, 'You have already submitted an application')
+            return render(request,'./applicant/applicant_facultyapplicationform.html')
+    return render(request, './applicant/applicant_facultyapplicationform.html')
+
+
+#--------------------WORK EXPERIENCE SHEET --------------------------
+
+
+def applicant_facultyapplicationform_workexpsheet(request):
+    global f_num
+    if (request.method == 'POST'):
+        try:
+            durationwork = request.POST.get("durationwork")
+            positionwork = request.POST.get("postitionwor")
+            officeunit = request.POST.get("officeunit")
+            agencyorg = request.POST.get("agencyorg")
+            accomplishments = request.FILES.get("accomplishments")
+            summaryduties = request.FILES.get("summaryduties")
+            facultyApplicantInfo = FacultyApplicant.objects.get(applicant_num = f_num)
+            facultyApplicantInfo.durationwork=durationwork 
+            facultyApplicantInfo.positionwork=positionwork
+            facultyApplicantInfo.officeunit=officeunit
+            facultyApplicantInfo.agencyorg=agencyorg
+            facultyApplicantInfo.accomplishments=accomplishments
+            facultyApplicantInfo.summaryduties=summaryduties
+            facultyApplicantInfo.save()
+            return redirect('applicant_facultyapplicationform_workexpsheet_submitted')
+
+        except:
+            messages.error(request, 'Fill everything on the form!')
+            return render(request, './applicant/applicant_facultyapplicationform_workexpsheet.html')
+    return render(request, './applicant/applicant_facultyapplicationform_workexpsheet.html')
+
+#-------------------- RE-ADMISSION --------------------------
+def readmission1(request):
+    return render(request, './applicant/readmission1.html')
+
+def readmission2(request):
+    if (request.method == 'POST'):
+        try:
+            applicant_num = app_num(4)
+            applicant_num = str(applicant_num)
+            lname = request.POST.get("lname")
+            fname = request.POST.get("fname")
+            mname = request.POST.get("mname")
+            studentID = request.POST.get("studentID")
+            department = s_dept
+            eadd = request.POST.get("eadd")
+            cnum = request.POST.get("cnum")
+            studentshifterletter = request.FILES.get("studentStudyplan")
+            studentCheckList = request.FILES.get("studentCheckList")
+            NoteOfUndertaking = request.FILES.get("NoteOfUndertaking")
+            ApprovedLOA = request.FILES.get("ApprovedLOA")
+            ReAdForm = request.FILES.get("ReAdForm")
+            LetterOfReAd = request.FILES.get("LetterOfReAd")
+            shifter_dateSubmitted = timezone.now()
+            readmission = ReAdmissionApplicant(studentID=studentID, department=department, lname=lname, fname=fname, mname=mname, eadd=eadd, cnum=cnum, studentshifterletter=studentshifterletter,shifter_dateSubmitted=shifter_dateSubmitted, applicant_num=applicant_num,LetterOfReAd = LetterOfReAd, ReAdForm = ReAdForm,ApprovedLOA = ApprovedLOA, NoteOfUndertaking = NoteOfUndertaking,studentCheckList = studentCheckList)
+            readmission.save()
+            return redirect('readmission3')
+        except:
+            messages.error(request,'You have already submitted an application!')
+            return render(request,'./applicant/shifter9.html')
+        
+    return render(request, './applicant/readmission2.html')
+
+
+def readmission3(request):
+    return render(request, './applicant/readmission3.html',{'app':r_num})
+
+#--------------------- APPLICANT PROFILE ----------------------------
+>>>>>>> Stashed changes
 
 def TProfile(request):
     global psw 
