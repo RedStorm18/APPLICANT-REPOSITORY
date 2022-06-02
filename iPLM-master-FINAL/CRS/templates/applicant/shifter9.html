@@ -103,6 +103,40 @@
 		left: 531px;
 		text-align: center;
 		}
+		#studPlanShape2
+	{
+		border: 1px solid #0C66CC;
+		background: #0C66CC;
+		font-size: 14px;
+		font-family: Nunito;
+		margin-right: 10px;
+		color: white;
+		border-radius: 10px;
+		height: 40px;
+		width: 210px;
+		display: flex;
+		align-items: center;
+		justify-content: left;
+		position:absolute;
+		filter:drop-shadow(1px 1px 3px gray);
+		top: 698px;
+		left: 80px;
+	}
+
+	#studyPlanFile2
+	{
+		font-family: Nunito;
+		font-size:14px;
+		background: white;
+		border-radius: 10px;
+		filter:drop-shadow(0px 0px 10px rgb(211,211,211));
+		height: 40px;
+		width: 210px;
+		outline: none;
+		position:absolute;
+		top: 698px;
+		left: 320px;
+	}
 	</style>
 	<script>
 		function checkforblank()
@@ -131,6 +165,9 @@
 			}
 			if (document.getElementById('studyPlanFile').value == ""){
 			errormessage += "Upload your Studyplan File\n";
+			}
+			if (document.getElementById('studyPlanFile2').value == ""){
+			errormessage += "Upload your Letter of College Approval\n";
 			}
 			var x = document.querySelector('input[type="radio"]:checked');
 			if ( x == null) {
@@ -197,13 +234,15 @@
 	<p id="UDSub">Please upload the following documents.</p>
 	<p id="LetterofIntentShape">&nbsp;&nbsp;&nbsp;&nbsp;Letter Of Intent</p>
 	<p id="GradeSSShape"> &nbsp;&nbsp;&nbsp;&nbsp; Grade Screenshot</p>	
-	<p id="studPlanShape"> &nbsp;&nbsp;&nbsp;&nbsp; Studyplan</p>	
+	<p id="studPlanShape"> &nbsp;&nbsp;&nbsp;&nbsp; Study Plan</p>	
+	<p id="studPlanShape2"> &nbsp;&nbsp;&nbsp;&nbsp; Letter of College Approval</p>	
      <!--Choose file-->       
 	<input type="file" id="LetterofIntentFile" name="LetterofIntentFile" accept=".pdf">
 	<input type="file" id="GradeScreenshotFile" name="GradeScreenshotFile" accept=".pdf">
 	<input type="file" id="studyPlanFile" name="studyPlanFile" accept=".pdf">
+	<input type="file" id="studyPlanFile2" name="letterOfApproval" accept=".pdf">
 	<script>
-		const types = ["LetterofIntentFile", "GradeScreenshotFile", "studyPlanFile"];
+		const types = ["LetterofIntentFile", "GradeScreenshotFile", "studyPlanFile", "studyPlanFile2"];
 		for(let x=0; x<5; x++){
 		var file = document.getElementById(types[x]);
 		file.onchange = function(e) {
