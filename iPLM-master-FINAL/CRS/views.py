@@ -5207,14 +5207,43 @@ def app_num(b):
             num2 = "S" + y + z +v +num
         applicant_num = num2
         return applicant_num
+    elif b == 3:
+        a = cursor.execute("SELECT LAST_INSERT_ID() from crs_facultyapplicant;")
+        num = int(a) + 1
+        num =str(num)
+        test = len(num)
+        if test < 2:
+            num2 = "S" + y + z +v + "00" +num
+        elif test <3:
+            num2 = "S" + y + z +v + "0" +num
+        else:
+            num2 = "S" + y + z +v +num
+        applicant_num = num2
+        return applicant_num
+    elif b == 4:
+        a = cursor.execute("SELECT LAST_INSERT_ID() from crs_readmissionapplicant;")
+        num = int(a) + 1
+        num =str(num)
+        test = len(num)
+        if test < 2:
+            num2 = "S" + y + z +v + "00" +num
+        elif test <3:
+            num2 = "S" + y + z +v + "0" +num
+        else:
+            num2 = "S" + y + z +v +num
+        applicant_num = num2
+        return applicant_num
     else:
         error = "ERROR"
         return error
 
 t_num = app_num(1)
 s_num = app_num(2)
+f_num = app_num(3)
+r_num = app_num(4)
 t_mail = "a"
 s_mail = "a"
+f_mail = "a"
 s_dept = "a"
 t_dept = "a"
 # note: DO NOT READJUST ABOVE VARIABLES ^^ 
@@ -5363,41 +5392,129 @@ def shifter9(request):
 
 def shifter10(request):
         return render(request, './applicant/shifter10.html',{'app':s_num, 'mail':s_mail})
-def GradesNotif(request):
-    if request.user.is_authenticated and request.user.is_student:
-        id= request.user.id
-        acad = AcademicYearInfo.objects.all
-        info = StudentInfo.objects.get(studentUser=id)
+
+
+#------------------- FACULTY APPLICANT -----------------------
+
+def applicantrequirements(request):
+    return render(request, './applicant/applicantrequirements.html')
+    
+
+def applicant_facultyapplicationform(request):
+    global f_mail, f_num
+    if (request.method == 'POST'):
+        applicant_num = app_num(3)
+        pw = str(applicant_num)
+        firstName = request.POST.get("firstName")
+        lastName = request.POST.get("lastName")
+        middleName = request.POST.get("middleName")
+        first = firstName.lower()
+        middle = middleName.lower()
+        last = lastName.lower()
+        last = last.translate({ord(c): None for c in string.whitespace})
+        firstName = firstName.title()
+        middleName = middleName.title()
+        lastName = lastName.title()
+        f = first[0]
+        m = middle[0]
+        email = f + m + last +"@plm.edu.ph"
+        f_mail=email
+        User = get_user_model()
+        log = User.objects.create_user(email = email, password = pw, firstName = firstName, middleName = middleName, lastName = lastName)
+        log.is_admin = False
+        log.is_applicant = True
+        log.save()
         try:
-            notif_type = "GRADES SUBMISSION"
-            feedback = crsGrade.objects.get(studentID=id)
-            description = "Application Submission Feedback"
-        except crsGrade.DoesNotExist:
-            notif_type = "GRADES SUBMISSION"
-            description = "No Submitted Application"
-            feedback = None
-        context = {'id': id,'acad':acad, 'info':info, 'feedback' : feedback, 'notif_type' : notif_type, 'description' : description }
-        return render(request, 'student/sHome/sHomeNotifdetails.html', context) 
-    else:
-         return redirect('index')
+            email = request.POST.get("email")
+            phoneNumber = request.POST.get("phoneNumber")
+            sex = request.POST.get("sex")
+            department = request.POST.get("department")
+            time = request.POST.get("time")
+            CV = request.FILES.get("CV")
+            certificates = request.FILES.get("certificates")
+            credentials = request.FILES.get("credentials")
+            TOR = request.FILES.get("TOR")
+            PDS = request.FILES.get("PDS")
+            f_num = applicant_num
+            facultyApplicantInfo = FacultyApplicant(firstName=firstName,lastName=lastName,middleName=middleName,email=email,phoneNumber=phoneNumber,sex= sex,department= department,time=time,CV=CV, certificates=certificates, credentials=credentials,TOR=TOR,PDS=PDS, applicant_num = applicant_num)
+            facultyApplicantInfo.save()
+            return redirect('applicant_facultyapplicationform_workexpsheet')
+        except:
+            messages.error(request, 'You have already submitted an application')
+            return render(request,'./applicant/applicant_facultyapplicationform.html')
+    return render(request, './applicant/applicant_facultyapplicationform.html')
+
+
+#--------------------WORK EXPERIENCE SHEET --------------------------
+
+
+def applicant_facultyapplicationform_workexpsheet(request):
+    global f_num
+    if (request.method == 'POST'):
+        try:
+            durationwork = request.POST.get("durationwork")
+            positionwork = request.POST.get("position")
+            officeunit = request.POST.get("officeunit")
+            agencyorg = request.POST.get("agencyorg")
+            accomplishments = request.FILES.get("accomplishments")
+            summaryduties = request.FILES.get("summaryduties")
+            facultyApplicantInfo = FacultyApplicant.objects.get(applicant_num = f_num)
+            facultyApplicantInfo.durationwork=durationwork 
+            facultyApplicantInfo.positionwork=positionwork
+            facultyApplicantInfo.officeunit=officeunit
+            facultyApplicantInfo.agencyorg=agencyorg
+            facultyApplicantInfo.accomplishments=accomplishments
+            facultyApplicantInfo.summaryduties=summaryduties
+            facultyApplicantInfo.save()
+            return redirect('applicant_facultyapplicationform_workexpsheet_submitted')
+
+        except:
+            messages.error(request, 'Fill everything on the form!')
+            return render(request, './applicant/applicant_facultyapplicationform_workexpsheet.html')
+    return render(request, './applicant/applicant_facultyapplicationform_workexpsheet.html')
+
+def applicant_facultyapplicationform_workexpsheet_submitted(request):
+    global f_num, f_mail
+    return render(request,'./applicant/applicant_facultyapplicationform_workexpsheet_submitted.html',{'app':f_num, 'mail':f_mail})
 
 
 
-#APPLICANT PROFILE
+#-------------------- RE-ADMISSION --------------------------
+def readmission1(request):
+    return render(request, './applicant/readmission1.html')
 
-def redir(request):
-    global psw
-    if request.user.is_authenticated and request.user.is_applicant:
-        search = psw[0]
+def readmission2(request):
+    if (request.method == 'POST'):
+        try:
+            applicant_num = app_num(4)
+            lname = request.POST.get("lname")
+            fname = request.POST.get("fname")
+            mname = request.POST.get("mname")
+            studentID = request.POST.get("studentID")
+            department = request.POST.get("department")
+            eadd = request.POST.get("eadd")
+            cnum = request.POST.get("cnum")
+            studentStudyplan = request.FILES.get("studentStudyplan")
+            studentCheckList = request.FILES.get("studentCheckList")
+            NoteOfUndertaking = request.FILES.get("NoteOfUndertaking")
+            ApprovedLOA = request.FILES.get("ApprovedLOA")
+            ReAdForm = request.FILES.get("ReAdForm")
+            LetterOfReAd = request.FILES.get("LetterOfReAd")
+            shifter_dateSubmitted = timezone.now()
+            readmission = ReAdmissionApplicant(studentID=studentID, department=department, lname=lname, fname=fname, mname=mname, eadd=eadd, cnum=cnum, studentStudyplan = studentStudyplan,shifter_dateSubmitted=shifter_dateSubmitted, applicant_num=applicant_num,LetterOfReAd = LetterOfReAd, ReAdForm = ReAdForm,ApprovedLOA = ApprovedLOA, NoteOfUndertaking = NoteOfUndertaking,studentCheckList = studentCheckList)
+            readmission.save()
+            return redirect('readmission3')
+        except:
+            messages.error(request,'You have already submitted an application!')
+            return render(request,'./applicant/readmission2.html')
+        
+    return render(request, './applicant/readmission2.html')
 
-        if search == "T":
-            pass
-        elif search == "S":
-            pass
-        elif search == "F":
-            pass
-    else:
-         return redirect('index')
+
+def readmission3(request):
+    return render(request, './applicant/readmission3.html',{'app':r_num})
+
+#--------------------- APPLICANT PROFILE ----------------------------
 
 def TProfile(request):
     global psw 
@@ -5461,6 +5578,34 @@ def FProfile(request):
         return render(request, 'applicant/profile/BaseProfile.html', context)
     else:
          return redirect('index')
+
+
+
+
+
+
+
+
+
+def GradesNotif(request):
+    if request.user.is_authenticated and request.user.is_student:
+        id= request.user.id
+        acad = AcademicYearInfo.objects.all
+        info = StudentInfo.objects.get(studentUser=id)
+        try:
+            notif_type = "GRADES SUBMISSION"
+            feedback = crsGrade.objects.get(studentID=id)
+            description = "Application Submission Feedback"
+        except crsGrade.DoesNotExist:
+            notif_type = "GRADES SUBMISSION"
+            description = "No Submitted Application"
+            feedback = None
+        context = {'id': id,'acad':acad, 'info':info, 'feedback' : feedback, 'notif_type' : notif_type, 'description' : description }
+        return render(request, 'student/sHome/sHomeNotifdetails.html', context) 
+    else:
+         return redirect('index')
+
+
 def GradesNotif(request):
     if request.user.is_authenticated and request.user.is_student:
         id= request.user.id

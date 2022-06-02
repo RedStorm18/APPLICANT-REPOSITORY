@@ -144,6 +144,15 @@
 		top: 385px;
 		left: 500px;
 	}
+	#line2{
+		top: 400px;
+	}
+	#UploadDocumentsTitle{
+		top: 420px;
+	}
+	#UDSub{
+		top: 450px;
+	}
 
 </style>
 
@@ -166,7 +175,7 @@
 			<p id="subLastname">Date</p>
 
 	<p id="ContactInformationText">Position in work<span style="color:#ff0000"><b>*</b></span></p>            <!--position work-->
-			<input type="text" id="EmailAddress" name="positionwork" placeholder="MASTER TEACHER I">
+			<input type="text" id="EmailAddress" name="position" placeholder="MASTER TEACHER I">
 			<p id="subEmailAddress">Position</p>
 	
 	<p id="DepartmentInformationText">Name of Office/Unit <span style="color:#ff0000"><b>*</b></span></p>            <!--office unit-->
@@ -191,23 +200,33 @@
 
      <!--Choose file-->
 
-	<input type="file" id="CVFile" name="accomplishments">
+	<input type="file" id="CVFile" name="accomplishments" accept=".pdf">
             
-	<input type="file" id="CertificateFile" name="summaryduties">
+	<input type="file" id="CertificateFile" name="summaryduties" accept=".pdf">
 
-	{% if messages %}
-	{% for message in messages %}
-			{{ message }}
-		</div>
-	{% endfor %}
-{% endif %}
 	
 	
 	<picture><a><p id="imageForm"><img src="{% static 'CRS/images/Applicants/Faculty/clip-1712.png' %}" alt="iplm" width="290px" height="230px"></a></p></picture>
 
 </form> </div>
 	<a href="{% url 'applicant_facultyapplicationform_workexpsheet_submitted' %}"> <button id="submitbutton"> <!--templates/Applicants/Faculty--> Submit </button></a>
-
+	<script>
+		const types = ["CVFile", "CertificateFile"];
+		for(let x=0; x<5; x++){
+		var file = document.getElementById(types[x]);
+		file.onchange = function(e) {
+		var ext = this.value.match(/\.([^\.]+)$/)[1];
+		switch (ext) {
+			case 'pdf':
+			case 'PDF':
+			break;
+			default:
+			alert('File type you are uploading is incorrect. \nAccepted file is only PDF');
+			this.value = '';
+		}
+		};
+	}
+	</script>
 
 
 <!-- tether, jQuery first, then Tether, then Bootstrap JS. -->

@@ -667,31 +667,34 @@ class TransfereeApplicant(models.Model):
 
     # dateApproved = models.DateTimeField()
 
-class studentScheduling(models.Model):
-    MONTH = (
-    ('Monday','Monday'),
-    ('Tuesday','Tuesday'),
-    ('Wednesday','Wednesday'),
-    ('Thursday','Thursday'),
-    ('Friday','Friday'),
-    ('Saturday','Saturday')
-)
-    TYPE = (
-    ('Asychronous','Asychronous'),
-    ('Sychronous','Sychronous'),
-)
-    instructor = ForeignKey(FacultyInfo,  null=True, verbose_name='Instructor', on_delete=models.SET_NULL,blank=True)
-    subjectCode = models.ForeignKey(curriculumInfo, null=True, verbose_name='Subjects', on_delete=models.CASCADE)
-    section = models.IntegerField(null=True,verbose_name='Subject Section' )
-    day = models.CharField(max_length=100, null=True, choices=MONTH, verbose_name='Day')
-    timeStart = models.TimeField()
-    timeEnd = models.TimeField()
-    room = models.ForeignKey(RoomInfo, null=True, verbose_name='Room', on_delete=models.CASCADE)
-    type= models.CharField(max_length=100, verbose_name="type",choices=TYPE, null=True)
-    realsection= models.ForeignKey(BlockSection, null=True, verbose_name='Block Section', on_delete=models.SET_NULL,blank=True)
+
+# RE-ADMISSION APPLICANT
+class ReAdmissionApplicant(models.Model):
+    studentID = models.CharField(max_length=100, verbose_name="StudentNumber", null=True)
+    department = models.CharField(max_length=100, verbose_name="Department", null=True)
+    lname = models.CharField(max_length=100, verbose_name="LastName", null=True)
+    fname = models.CharField(max_length=100, verbose_name="FirstName", null=True)
+    mname = models.CharField(max_length=100, verbose_name="MiddleName", null=True)
+    eadd = models.CharField(max_length=100, verbose_name="EmailAddress", null=True)
+    cnum = models.CharField(max_length=100, verbose_name="ContactNumber", null=True)
+    studentStudyplan = models.FileField(upload_to='ReAdmissionSubmission/', blank=True, null=True)
+    studentCheckList = models.FileField(upload_to='ReAdmissionSubmission/', blank=True, null=True)
+    NoteOfUndertaking = models.FileField(upload_to='ReAdmissionSubmission/', blank=True, null=True)
+    ApprovedLOA = models.FileField(upload_to='ReAdmissionSubmission/', blank=True, null=True)
+    ReAdForm = models.FileField(upload_to='ReAdmissionSubmission/', blank=True, null=True)
+    LetterOfReAd = models.FileField(upload_to='ReAdmissionSubmission/', blank=True, null=True)
+    remarks = models.CharField(max_length=150, default='Submitted', verbose_name='Status')
+    shifter_dateSubmitted = models.DateField(default=now)
+    signature1 = models.ImageField(upload_to='ShifterSign/', null=True, blank=True)
+    signature2 = models.ImageField(upload_to='ShifterSign/', null=True, blank=True)
+    applicant_num = models.CharField(max_length=10, verbose_name="applicant_num", null=True)
+    # dateApproved = models.DateTimeField()
 
     class Meta:
-        verbose_name_plural = "Student Scheduling"
+        verbose_name_plural = "ReAdmission Applicants"
+
+    def str(self):
+        return '| %s  %s ' % (self.studentID, self.lname)
 
 
 # --------------------------- Faculty Applicant Database ---------------------------------------
@@ -725,6 +728,37 @@ class FacultyApplicant(models.Model):
     agencyorg = models.CharField(max_length=100, verbose_name="agency", null=True)
     accomplishments = models.FileField(upload_to='facultyApplicant/', blank=True, null=True)
     summaryduties = models.FileField(upload_to='facultyApplicant/', blank=True, null=True)
+
+
+
+
+class studentScheduling(models.Model):
+    MONTH = (
+    ('Monday','Monday'),
+    ('Tuesday','Tuesday'),
+    ('Wednesday','Wednesday'),
+    ('Thursday','Thursday'),
+    ('Friday','Friday'),
+    ('Saturday','Saturday')
+)
+    TYPE = (
+    ('Asychronous','Asychronous'),
+    ('Sychronous','Sychronous'),
+)
+    instructor = ForeignKey(FacultyInfo,  null=True, verbose_name='Instructor', on_delete=models.SET_NULL,blank=True)
+    subjectCode = models.ForeignKey(curriculumInfo, null=True, verbose_name='Subjects', on_delete=models.CASCADE)
+    section = models.IntegerField(null=True,verbose_name='Subject Section' )
+    day = models.CharField(max_length=100, null=True, choices=MONTH, verbose_name='Day')
+    timeStart = models.TimeField()
+    timeEnd = models.TimeField()
+    room = models.ForeignKey(RoomInfo, null=True, verbose_name='Room', on_delete=models.CASCADE)
+    type= models.CharField(max_length=100, verbose_name="type",choices=TYPE, null=True)
+    realsection= models.ForeignKey(BlockSection, null=True, verbose_name='Block Section', on_delete=models.SET_NULL,blank=True)
+
+    class Meta:
+        verbose_name_plural = "Student Scheduling"
+
+
 
 # ---------------------------Saving and Creating Users----------------- ---------------------------
 @receiver(post_save, sender=User)

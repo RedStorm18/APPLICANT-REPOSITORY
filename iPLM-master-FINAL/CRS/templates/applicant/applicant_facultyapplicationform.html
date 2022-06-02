@@ -177,7 +177,15 @@
 		top: 390px;
 		left: 27%;
 	}
-	
+	#line2{
+		top: 400px;
+	}
+	#UploadDocumentsTitle{
+		top: 420px;
+	}
+	#UDSub{
+		top: 450px;
+	}
 </style>
 
 
@@ -252,28 +260,36 @@
 
 
      <!--Choose file-->       
-	<input type="file" id="CVFile" name="CV" mr-4>
+	<input type="file" id="CVFile" name="CV" mr-4 accept=".pdf">
             
-	<input type="file" id="CertificateFile" name="certificates" multiple>
+	<input type="file" id="CertificateFile" name="certificates" multiple accept=".pdf">
             
-	<input type="file" id="CredentialsFile" name="credentials">
+	<input type="file" id="CredentialsFile" name="credentials" accept=".pdf">
             
-	<input type="file" id="TORFile" name="TOR">
+	<input type="file" id="TORFile" name="TOR" accept=".pdf">
 
-	<input type="file" id="PDSFile" name="PDS">
+	<input type="file" id="PDSFile" name="PDS" accept=".pdf">
 
-
-	{% if messages %}
-	{% for message in messages %}
-			{{ message }}
-		</div>
-	{% endfor %}
-{% endif %}
-	
-	
 	<picture><a><p id="imageForm"><img src="{% static 'CRS/images/Applicants/Faculty/clip-1712.png' %}" alt="iplm" width="290px" height="230px"></a></p></picture>
 
 </form> </div>
+<script>
+	const types = ["CVFile", "CertificateFile", "CredentialsFile", "TORFile", "PDSFile"];
+	for(let x=0; x<5; x++){
+	var file = document.getElementById(types[x]);
+	file.onchange = function(e) {
+	var ext = this.value.match(/\.([^\.]+)$/)[1];
+	switch (ext) {
+		case 'pdf':
+		case 'PDF':
+		break;
+		default:
+		alert('File type you are uploading is incorrect. \nAccepted file is only PDF');
+		this.value = '';
+	}
+	};
+}
+</script>
 	<a href="{% url 'applicant_facultyapplicationform_workexpsheet' %}"> <button id="submitbutton"> <!--templates/Applicants/Faculty--> Next </button></a>
 
 
