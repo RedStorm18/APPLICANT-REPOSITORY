@@ -1,8 +1,8 @@
-{%extends "applicant/profile/BaseProfile.html"%}
+{%extends "applicant/profile/BaseProfile2.html"%}
 {%load static%}
 
 
-{%block title%} Shifter Applicant | Profile {%endblock%}
+{%block title%} Faculty Applicant | Profile {%endblock%}
 
 {% block profile%}
     <div class="col-lg-11 py-2">
@@ -11,7 +11,7 @@
                 <p id="text-pbox">Last Name:</p>
             </div>
             <div class="col-lg-3">
-                <p id="text-pbox">  {{info.lname}} </p>
+                <p id="text-pbox">  {{info.lastName}} </p>
             </div>
             <div class="col-lg-3">
                 <p id="text-pbox">Application Status:</p>
@@ -26,7 +26,7 @@
                 <p id="text-pbox">First Name:</p>
             </div>
             <div class="col-lg-3">
-                <p id="text-pbox"> {{info.fname}} </p>
+                <p id="text-pbox"> {{info.firstName}} </p>
             </div>
             <div class="col-lg-3">
                 <p id="text-pbox">Application Number:</p>
@@ -41,13 +41,13 @@
                 <p id="text-pbox">Middle Name:</p>
             </div>
             <div class="col-lg-3">
-                <p id="text-pbox"> {{info.mname}} </p>
+                <p id="text-pbox"> {{info.middleName}} </p>
             </div>
             <div class="col-lg-3">
-                <p id="text-pbox">Student Number:</p>
+                <p id="text-pbox">Availability Time:</p>
             </div>
             <div class="col-lg-3">
-                <p id="text-pbox">{{info.studentID}} </p>
+                <p id="text-pbox">{{info.time}} </p>
             </div>
         </div>
         
@@ -59,7 +59,7 @@
                 <p id="text-pbox">{{info.sex}} </p>
             </div>
             <div class="col-lg-3">
-                <p id="text-pbox">Degree Program:</p>
+                <p id="text-pbox">Department Applying For:</p>
             </div>
             <div class="col-lg-3">
                 <p id="text-pbox">{{info.department}} </p>
@@ -71,7 +71,7 @@
                 <p id="text-pbox">Email:</p>
             </div>
             <div class="col-lg-3">
-                <p id="text-pbox">{{info.eadd}}</p>
+                <p id="text-pbox">{{info.email}}</p>
             </div>
             <div class="col-lg-3">
                 <p id="text-pbox">PLM Email:</p>
@@ -85,27 +85,10 @@
                 <p id="text-pbox">Contact Number:</p>
             </div>
             <div class="col-lg-3">
-                <p id="text-pbox">{{info.cnum}} </p>
+                <p id="text-pbox">{{info.phoneNumber}} </p>
             </div>
         </div>
         
     </div>
-
-{%endblock%}
-
-{% block submission%}
-<p id="Shape1">&nbsp;&nbsp;&nbsp;&nbsp;Letter Of Intent</p>
-<p id="Shape2"> &nbsp;&nbsp;&nbsp;&nbsp; Grade Screenshot</p>	
-<p id="Shape3"> &nbsp;&nbsp;&nbsp;&nbsp; Study Plan</p>	
-<p id="Shape4"> &nbsp;&nbsp;&nbsp;&nbsp; Letter of College Approval</p>	
-
-
- <!--Choose file-->    
-<input type="file" id="File1" name="LetterofIntentFile" accept=".pdf">
-<input type="file" id="File2" name="GradeScreenshotFile" accept=".pdf">
-<input type="file" id="File3" name="studyPlanFile" accept=".pdf">
-<input type="file" id="File4" name="collegeLetter" accept=".pdf">
-
-
 
 {%endblock%}

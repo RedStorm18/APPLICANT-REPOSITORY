@@ -5213,11 +5213,11 @@ def app_num(b):
         num =str(num)
         test = len(num)
         if test < 2:
-            num2 = "S" + y + z +v + "00" +num
+            num2 = "F" + y + z +v + "00" +num
         elif test <3:
-            num2 = "S" + y + z +v + "0" +num
+            num2 = "F" + y + z +v + "0" +num
         else:
-            num2 = "S" + y + z +v +num
+            num2 = "F" + y + z +v +num
         applicant_num = num2
         return applicant_num
     elif b == 4:
@@ -5226,11 +5226,11 @@ def app_num(b):
         num =str(num)
         test = len(num)
         if test < 2:
-            num2 = "S" + y + z +v + "00" +num
+            num2 = "R" + y + z +v + "00" +num
         elif test <3:
-            num2 = "S" + y + z +v + "0" +num
+            num2 = "R" + y + z +v + "0" +num
         else:
-            num2 = "S" + y + z +v +num
+            num2 = "R" + y + z +v +num
         applicant_num = num2
         return applicant_num
     else:
@@ -5417,10 +5417,10 @@ def applicant_facultyapplicationform(request):
         lastName = lastName.title()
         f = first[0]
         m = middle[0]
-        email = f + m + last +"@plm.edu.ph"
-        f_mail=email
+        mail = f + m + last +"@plm.edu.ph"
+        f_mail=mail
         User = get_user_model()
-        log = User.objects.create_user(email = email, password = pw, firstName = firstName, middleName = middleName, lastName = lastName)
+        log = User.objects.create_user(email = mail, password = pw, firstName = firstName, middleName = middleName, lastName = lastName)
         log.is_admin = False
         log.is_applicant = True
         log.save()
@@ -5429,14 +5429,14 @@ def applicant_facultyapplicationform(request):
             phoneNumber = request.POST.get("phoneNumber")
             sex = request.POST.get("sex")
             department = request.POST.get("department")
-            time = request.POST.get("time")
-            CV = request.FILES.get("CV")
+            time = request.POST.get("Time")
+            cv1 = request.FILES.get("CV")
             certificates = request.FILES.get("certificates")
             credentials = request.FILES.get("credentials")
-            TOR = request.FILES.get("TOR")
-            PDS = request.FILES.get("PDS")
+            Tor = request.FILES.get("TOR")
+            pds = request.FILES.get("PDS")
             f_num = applicant_num
-            facultyApplicantInfo = FacultyApplicant(firstName=firstName,lastName=lastName,middleName=middleName,email=email,phoneNumber=phoneNumber,sex= sex,department= department,time=time,CV=CV, certificates=certificates, credentials=credentials,TOR=TOR,PDS=PDS, applicant_num = applicant_num)
+            facultyApplicantInfo = FacultyApplicant(firstName=firstName,lastName=lastName,middleName=middleName,email=email,phoneNumber=phoneNumber,sex= sex,department= department,time=time,CV= cv1, certificates=certificates, credentials=credentials,TOR=Tor,PDS=pds, applicant_num = f_num)
             facultyApplicantInfo.save()
             return redirect('applicant_facultyapplicationform_workexpsheet')
         except:
@@ -5557,6 +5557,7 @@ def ShProfile(request):
             Letter = request.FILES.get("LetterofIntentFile")
             Grade = request.FILES.get("GradeScreenshotFile")
             Studyplan = request.FILES.get("studyPlanFile")
+            collegeLetter = request.FILES.get("collegeLetter")
             if Studyplan != None:
                 info.studentStudyplan = Studyplan
                 info.save()
@@ -5566,6 +5567,9 @@ def ShProfile(request):
             if Grade != None:
                 info.studentGrade = Grade
                 info.save()
+            if collegeLetter != None:
+                info.collegeLetter = collegeLetter
+                info.save()
             messages.success(request, 'Files submitted successfully.')
         return render(request, 'applicant/profile/SProfile.html', context)
     else:
@@ -5574,8 +5578,9 @@ def FProfile(request):
     global psw 
     if request.user.is_authenticated and request.user.is_applicant:
         info = FacultyApplicant.objects.get(applicant_num = psw)
-        context = {'info':info}
-        return render(request, 'applicant/profile/BaseProfile.html', context)
+        mail = request.user.email
+        context = {'info':info, 'mail':mail}
+        return render(request, 'applicant/profile/FProfile.html', context)
     else:
          return redirect('index')
 
