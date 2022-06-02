@@ -619,7 +619,6 @@ class ShifterApplicant(models.Model):
     studentStudyplan = models.FileField(upload_to='ShifterSubmission/', blank=True, null=True)
     studentshifterletter = models.FileField(upload_to='ShifterSubmission/', blank=True, null=True)
     studentGrade = models.FileField(upload_to='ShifterSubmission/', blank=True, null=True)
-    CollegeApproval = models.FileField(upload_to='ShifterSubmission/', blank=True, null=True)
     remarks = models.CharField(max_length=150, default='Submitted', verbose_name='Status')
     shifter_dateSubmitted = models.DateField(default=now)
     signature1 = models.ImageField(upload_to='ShifterSign/', null=True, blank=True)
@@ -666,36 +665,6 @@ class TransfereeApplicant(models.Model):
 
     # dateApproved = models.DateTimeField()
 
-# RE-ADMISSION APPLICANT
-class ReAdmissionApplicant(models.Model):
-    studentID = models.CharField(max_length=100, verbose_name="StudentNumber", null=True)
-    department = models.CharField(max_length=100, verbose_name="Department", null=True)
-    lname = models.CharField(max_length=100, verbose_name="LastName", null=True)
-    fname = models.CharField(max_length=100, verbose_name="FirstName", null=True)
-    mname = models.CharField(max_length=100, verbose_name="MiddleName", null=True)
-    eadd = models.CharField(max_length=100, verbose_name="EmailAddress", null=True)
-    cnum = models.CharField(max_length=100, verbose_name="ContactNumber", null=True)
-    studentStudyplan = models.FileField(upload_to='ReAdmissionSubmission/', blank=True, null=True)
-    studentshifterletter = models.FileField(upload_to='ReAdmissionSubmission/', blank=True, null=True)
-    studentGrade = models.FileField(upload_to='ReAdmissionSubmission/', blank=True, null=True)
-    stud = models.FileField(upload_to='ReAdmissionSubmission/', blank=True, null=True)
-    studee = models.FileField(upload_to='ReAdmissionSubmission/', blank=True, null=True)
-    req1 = models.FileField(upload_to='ReAdmissionSubmission/', blank=True, null=True)
-    remarks = models.CharField(max_length=150, default='Submitted', verbose_name='Status')
-    shifter_dateSubmitted = models.DateField(default=now)
-    signature1 = models.ImageField(upload_to='ShifterSign/', null=True, blank=True)
-    signature2 = models.ImageField(upload_to='ShifterSign/', null=True, blank=True)
-    applicant_num = models.CharField(max_length=10, verbose_name="applicant_num", null=True)
-    # dateApproved = models.DateTimeField()
-
-    class Meta:
-        verbose_name_plural = "ReAdmission Applicants"
-
-    def str(self):
-        return '| %s  %s ' % (self.studentID, self.lname)
-
-        
-
 class studentScheduling(models.Model):
     MONTH = (
     ('Monday','Monday'),
@@ -739,15 +708,6 @@ class FacultyApplicant(models.Model):
     TOR = models.FileField(upload_to='facultyApplicant/', blank=True, null=True)
     PDS = models.FileField(upload_to='facultyApplicant/', blank=True, null=True)
     remarks = models.CharField(max_length=150, default='Submitted', verbose_name='Status')
-    #----------------------------WORK EXPERIENCE SHEET-------------------------------------------------
-
-    durationwork = models.CharField(max_length=100, verbose_name="Durationwork", null=True)
-    positionwork = models.CharField(max_length=100, verbose_name="Positionwork", null=True)
-    officeunit = models.CharField(max_length=100, verbose_name="office unit", null=True)
-    agencyorg = models.CharField(max_length=100, verbose_name="agency", null=True)
-    accomplishments = models.FileField(upload_to='facultyApplicant/', blank=True, null=True)
-    summaryduties = models.FileField(upload_to='facultyApplicant/', blank=True, null=True)
-    applicant_num = models.CharField(max_length=10, verbose_name="applicant_num", null=True)
 
     class Meta:
         verbose_name_plural = "Faculty Applicants"
@@ -755,7 +715,14 @@ class FacultyApplicant(models.Model):
     def __str__(self):
         return self.email
 
+#----------------------------WORK EXPERIENCE SHEET-------------------------------------------------
 
+    durationwork = models.CharField(max_length=100, verbose_name="Durationwork", null=True)
+    positionwork = models.CharField(max_length=100, verbose_name="positionwork", null=True)
+    officeunit = models.CharField(max_length=100, verbose_name="office unit", null=True)
+    agencyorg = models.CharField(max_length=100, verbose_name="agency", null=True)
+    accomplishments = models.FileField(upload_to='facultyApplicant/', blank=True, null=True)
+    summaryduties = models.FileField(upload_to='facultyApplicant/', blank=True, null=True)
 
 # ---------------------------Saving and Creating Users----------------- ---------------------------
 @receiver(post_save, sender=User)

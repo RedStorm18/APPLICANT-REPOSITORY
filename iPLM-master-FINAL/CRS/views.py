@@ -2251,6 +2251,54 @@ def student_clearanceform(request):
 def applicant(request):
     return render(request,'./applicant/applicant.html')
 
+
+#--------------------------- FACULTY APPLICANT VIEWS --------------------------
+def applicant_facultyapplicationform(request):
+    return render(request, './applicant/applicant_facultyapplicationform.html')
+
+def applicant_successfullysubmitted(request):
+    return render(request, './applicant/applicant_successfullysubmitted.html')
+
+def applicantrequirements(request):
+    return render(request, './applicant/applicantrequirements.html')
+    
+def faculty_applicant(request):
+    return render(request, './applicant/faculty_applicant.html')
+
+def faculty_applicant_form(request):
+    if (request.method == 'POST'):
+        try:
+            firstName = request.POST['firstName']
+            lastName = request.POST['lastName']
+            middleName = request.POST['middleName']
+            email = request.POST['email']
+            phoneNumber = request.POST['phoneNumber']
+            sex = request.POST['sex']
+            department = request.POST['department']
+            time = request.POST['time']
+            CV = request.FILES['CV']
+            certificates = request.FILES.get('certificates')
+            credentials = request.FILES.get('credentials')
+            TOR = request.FILES['TOR']
+            PDS = request.FILES['PDS']
+            facultyApplicantInfo = FacultyApplicant(firstName=firstName,lastName=lastName,middleName=middleName,email=email,phoneNumber=phoneNumber,sex=sex,department=department,time=time,CV=CV, certificates=certificates, credentials=credentials, TOR=TOR, PDS=PDS)
+            facultyApplicantInfo.save()
+            return redirect('faculty_applicant_form_submitted')
+        except:
+            messages.error(request,'Fill everything on the form!')
+            return render(request,'./applicant/faculty_applicant_form.html')
+    return render(request, './applicant/faculty_applicant_form.html')
+    
+def faculty_applicant_form_submitted(request):
+    return render(request,'./applicant/faculty_applicant_form_submitted.html')
+
+
+#--------------------WORK EXPERIENCE SHEET --------------------------
+def applicant_facultyapplicationform_workexpsheet(request):
+    return render(request, './applicant/applicant_facultyapplicationform_workexpsheet.html')
+
+def applicant_facultyapplicationform_workexpsheet_submitted(request):
+    return render(request,'./applicant/faculty_applicant_form_submitted.html')
     
 # ------------------- STUDENT APPLICANT VIEWS -------------------------------
 def student_applicant(request):
@@ -5159,44 +5207,14 @@ def app_num(b):
             num2 = "S" + y + z +v +num
         applicant_num = num2
         return applicant_num
-
-    elif b == 3:
-        a = cursor.execute("SELECT LAST_INSERT_ID() from crs_facultyapplicant;")
-        num = int(a) + 1
-        num =str(num)
-        test = len(num)
-        if test < 2:
-            num2 = "F" + y + z +v + "00" +num
-        elif test <3:
-            num2 = "F" + y + z +v + "0" +num
-        else:
-            num2 = "F" + y + z +v +num
-        applicant_num = num2
-        return applicant_num
-    elif b == 4:
-        a = cursor.execute("SELECT LAST_INSERT_ID() from crs_readmissionapplicant;")
-        num = int(a) + 1
-        num =str(num)
-        test = len(num)
-        if test < 2:
-            num2 = "R" + y + z +v + "00" +num
-        elif test <3:
-            num2 = "R" + y + z +v + "0" +num
-        else:
-            num2 = "R" + y + z +v +num
-        applicant_num = num2
-        return applicant_num
     else:
         error = "ERROR"
         return error
 
 t_num = app_num(1)
 s_num = app_num(2)
-f_num = app_num(3)
-r_num = app_num(4)
 t_mail = "a"
 s_mail = "a"
-f_mail = "a"
 s_dept = "a"
 t_dept = "a"
 # note: DO NOT READJUST ABOVE VARIABLES ^^ 
@@ -5331,9 +5349,8 @@ def shifter9(request):
             studentshifterletter = request.FILES.get("LetterofIntentFile")
             studentGrade = request.FILES.get("GradeScreenshotFile")
             studentStudyplan = request.FILES.get("studyPlanFile")
-            collegeapproval = request.FILES.get("college")
             shifter_dateSubmitted = timezone.now()
-            shiftee = ShifterApplicant(studentID=studentID, department=department, lname=lname, fname=fname, mname=mname, eadd=eadd, cnum=cnum, studentshifterletter=studentshifterletter, studentGrade=studentGrade, studentStudyplan=studentStudyplan,shifter_dateSubmitted=shifter_dateSubmitted, applicant_num=applicant_num, sex=sex, CollegeApproval=collegeapproval)
+            shiftee = ShifterApplicant(studentID=studentID, department=department, lname=lname, fname=fname, mname=mname, eadd=eadd, cnum=cnum, studentshifterletter=studentshifterletter, studentGrade=studentGrade, studentStudyplan=studentStudyplan,shifter_dateSubmitted=shifter_dateSubmitted, applicant_num=applicant_num, sex=sex)
             shiftee.save()
             return redirect('shifter10')
         except:          
@@ -5364,135 +5381,22 @@ def GradesNotif(request):
          return redirect('index')
 
 
-#--------------------------- FACULTY APPLICANT VIEWS --------------------------
 
-def applicant_successfullysubmitted(request):
-    return render(request, './applicant/applicant_successfullysubmitted.html')
+#APPLICANT PROFILE
 
-def applicantrequirements(request):
-    return render(request, './applicant/applicantrequirements.html')
-    
-def faculty_applicant(request):
-    return render(request, './applicant/faculty_applicant.html')
+def redir(request):
+    global psw
+    if request.user.is_authenticated and request.user.is_applicant:
+        search = psw[0]
 
-def faculty_applicant_form(request):
-    return render(request, './faculty_applicant_form.html')
-    
-def faculty_applicant_form_submitted(request):
-    return render(request,'./applicant/faculty_applicant_form_submitted.html')
-
-def applicant_facultyapplicationform_workexpsheet_submitted(request):
-    return render(request,'./applicant/applicant_facultyapplicationform_workexpsheet_submitted.html',{'app':f_num, 'mail':f_mail})
-
-def applicant_facultyapplicationform(request):
-    global f_mail
-    if (request.method == 'POST'):
-        applicant_num = app_num(3)
-        pw = str(applicant_num)
-        firstName = request.POST.get("firstName")
-        lastName = request.POST.get("lastName")
-        middleName = request.POST.get("middleName")
-        first = firstName.lower()
-        middle = middleName.lower()
-        last = lastName.lower()
-        last = last.translate({ord(c): None for c in string.whitespace})
-        firstName = firstName.title()
-        middleName = middleName.title()
-        lastName = lastName.title()
-        f = first[0]
-        m = middle[0]
-        email = f + m + last +"@plm.edu.ph"
-        f_mail=email
-        User = get_user_model()
-        log = User.objects.create_user(email = email, password = pw, firstName = firstName, middleName = middleName, lastName = lastName)
-        log.is_admin = False
-        log.is_applicant = True
-        log.save()
-        try:
-            email = request.POST.get("email")
-            phoneNumber = request.POST.get("phoneNumber")
-            sex = request.POST.get("sex")
-            department = request.POST.get("department")
-            time = request.POST.get("time")
-            CV = request.FILES.get("CV")
-            certificates = request.FILES.get("certificates")
-            credentials = request.FILES.get("credentials")
-            TOR = request.FILES.get("TOR")
-            PDS = request.FILES.get("PDS")
-            facultyApplicantInfo = FacultyApplicant(firstName=firstName,lastName=lastName,middleName=middleName,email=email,phoneNumber=phoneNumber,sex= sex,department= department,time=time,CV=CV, certificates=certificates, credentials=credentials,TOR=TOR,PDS=PDS, applicant_num = applicant_num)
-            facultyApplicantInfo.save()
-            return redirect('applicant_facultyapplicationform_workexpsheet')
-        except:
-            messages.error(request, 'You have already submitted an application')
-            return render(request,'./applicant/applicant_facultyapplicationform.html')
-    return render(request, './applicant/applicant_facultyapplicationform.html')
-
-
-#--------------------WORK EXPERIENCE SHEET --------------------------
-
-
-def applicant_facultyapplicationform_workexpsheet(request):
-    global f_num
-    if (request.method == 'POST'):
-        try:
-            durationwork = request.POST.get("durationwork")
-            positionwork = request.POST.get("postitionwor")
-            officeunit = request.POST.get("officeunit")
-            agencyorg = request.POST.get("agencyorg")
-            accomplishments = request.FILES.get("accomplishments")
-            summaryduties = request.FILES.get("summaryduties")
-            facultyApplicantInfo = FacultyApplicant.objects.get(applicant_num = f_num)
-            facultyApplicantInfo.durationwork=durationwork 
-            facultyApplicantInfo.positionwork=positionwork
-            facultyApplicantInfo.officeunit=officeunit
-            facultyApplicantInfo.agencyorg=agencyorg
-            facultyApplicantInfo.accomplishments=accomplishments
-            facultyApplicantInfo.summaryduties=summaryduties
-            facultyApplicantInfo.save()
-            return redirect('applicant_facultyapplicationform_workexpsheet_submitted')
-
-        except:
-            messages.error(request, 'Fill everything on the form!')
-            return render(request, './applicant/applicant_facultyapplicationform_workexpsheet.html')
-    return render(request, './applicant/applicant_facultyapplicationform_workexpsheet.html')
-
-#-------------------- RE-ADMISSION --------------------------
-def readmission1(request):
-    return render(request, './applicant/readmission1.html')
-
-def readmission2(request):
-    if (request.method == 'POST'):
-        try:
-            applicant_num = app_num(4)
-            applicant_num = str(applicant_num)
-            lname = request.POST.get("lname")
-            fname = request.POST.get("fname")
-            mname = request.POST.get("mname")
-            studentID = request.POST.get("studentID")
-            department = s_dept
-            eadd = request.POST.get("eadd")
-            cnum = request.POST.get("cnum")
-            studentshifterletter = request.FILES.get("studentStudyplan")
-            studentGrade = request.FILES.get("studentshifterletter")
-            studentStudyplan = request.FILES.get("studentGrade")
-            stud = request.FILES.get("stud")
-            studee = request.FILES.get("studee")
-            req1 = request.FILES.get("req1")
-            shifter_dateSubmitted = timezone.now()
-            readmission = ReAdmissionApplicant(studentID=studentID, department=department, lname=lname, fname=fname, mname=mname, eadd=eadd, cnum=cnum, studentshifterletter=studentshifterletter, studentGrade=studentGrade, studentStudyplan=studentStudyplan,shifter_dateSubmitted=shifter_dateSubmitted, applicant_num=applicant_num, stud=stud, studee=studee, req1=req1)
-            readmission.save()
-            return redirect('readmission3')
-        except:
-            messages.error(request,'You have already submitted an application!')
-            return render(request,'./applicant/shifter9.html')
-        
-    return render(request, './applicant/readmission2.html')
-
-
-def readmission3(request):
-    return render(request, './applicant/readmission3.html',{'app':r_num})
-
-#--------------------- APPLICANT PROFILE ----------------------------
+        if search == "T":
+            pass
+        elif search == "S":
+            pass
+        elif search == "F":
+            pass
+    else:
+         return redirect('index')
 
 def TProfile(request):
     global psw 
@@ -5549,12 +5453,11 @@ def ShProfile(request):
     else:
          return redirect('index')
 def FProfile(request):
-    global psw
+    global psw 
     if request.user.is_authenticated and request.user.is_applicant:
         info = FacultyApplicant.objects.get(applicant_num = psw)
-        mail = request.user.email
-        context = {'info':info, 'mail':mail}
-        return render(request, 'applicant/profile/FProfile.html', context)
+        context = {'info':info}
+        return render(request, 'applicant/profile/BaseProfile.html', context)
     else:
          return redirect('index')
 def GradesNotif(request):

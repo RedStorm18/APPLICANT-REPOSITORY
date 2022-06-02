@@ -79,12 +79,12 @@
 	/* para kalinya ng header */
 	#AvailabilityTimeText
 	{
-		top: 348px;
+		top: 360px;
 		left: 80px;
 	}
 
 	/* yung sa effect ng paglalagyan ng input */
-	#LastName, #FirstName, #MiddleName, #EmailAddress, #Phone, #depart, #Time, #Sex
+	#LastName, #FirstName, #MiddleName, #EmailAddress, #Phone, #department, #Time, #Sex
 	{
 		width: 240px;
 		height:25px;
@@ -120,7 +120,7 @@
 		left: 70.5%;
 	}
 
-	#depart
+	#department
 	{
 		position:absolute;
 		top: 290px;
@@ -131,51 +131,8 @@
 	#Time
 	{
 		position:absolute;
-		top: 348px;
+		top: 360px;
 		left: 280px;
-	}
-
-	#PDSShape
-	{
-		border: 1px solid #0C66CC;
-		background: #0C66CC;
-		font-size: 14px;
-		font-family: Nunito;
-		margin-right: 10px;
-		color: white;
-		border-radius: 10px;
-		height: 40px;
-		width: 210px;
-		display: flex;
-		align-items: center;
-		justify-content: left;
-		position:absolute;
-		filter:drop-shadow(1px 1px 3px gray);
-	}
-	
-	#PDSShape
-	{
-	    top: 768px;
-		left: 80px;
-	}
-
-	#PDSFile
-	{
-	    top: 768px;
-	    left: 320px;
-	}
-	#PDSFile
-	{
-		font-family: Nunito;
-		font-size:14px;
-		background: white;
-		filter:drop-shadow(0px 0px 10px rgb(211,211,211));
-		border-radius:10px;
-		height: 40px;
-		width: 210px;
-		outline: none;
-		position:absolute;
-		margin-left: 20px;
 	}
 
 	#subDepartment
@@ -217,130 +174,14 @@
 		font-family: Nunito;
 		color: #0C66CC;
 		position:absolute;
-		top: 380px;
+		top: 390px;
 		left: 27%;
 	}
-	.donate-now {
-		list-style-type: none;
-		margin: 0 0 0 0;
-		padding: 0;
-		}
-
-		.donate-now li {
-		float: left;
-		margin: 0 20px 0 0;
-		width: 80px;
-		height: 40px;
-		position: relative;
-		}
-
-		.donate-now label,
-		.donate-now input {
-		display: block;
-		position: absolute;
-		font-size: 17px;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		}
-
-		.donate-now input[type="radio"] {
-		opacity: 0.01;
-		position: absolute;
-		width: 100%;
-		border: 0px;
-		height: 2em;
-		z-index: 120;
-		}
-
-		.donate-now input[type="radio"]:checked+label,
-		.Checked+label {
-		background: #0C66CC ;
-		color: white;
-		
-		}
-
-		.donate-now label {
-		padding: 5px;
-		border: 1px solid #CCC;
-		border-radius: 12px;
-		cursor: pointer;
-		z-index: 90;
-		}
-
-		.donate-now label:hover {
-		background: #DDD;
-		}
-
-		#gender{
-		font-size:18px;
-		font-family:Nunito;
-		color: #0C66CC;
-		position:absolute;
-		top: 213px;
-		left: 790px;
-		text-align: center;
-		}
-
-		#line2{
-			top:385px;
-		}
-		#UploadDocumentsTitle{
-			top:400px;
-		}
+	
 </style>
 
 
 </head>
-
-<script>
-	function checkforblank() {
-	var errormessage = "";
-
-	if (document.getElementById('LastName').value == "") {
-		errormessage += "Enter Your Last Name \n";
-		}
-	if (document.getElementById('FirstName').value == "") {
-		errormessage += "Enter Your First Name \n";
-		}
-	if (document.getElementById('EmailAddress').value == "") {
-		errormessage += "Enter Your Email Address \n";
-		}
-	if (document.getElementById('Phone').value == "") {
-		errormessage += "Enter Your Phone Number \n";
-		}
-	if (document.getElementById('Time').value == "") {
-		errormessage += "Enter Your Availability Time \n";
-		}
-	if (document.getElementById('CVFile').value == "") {
-		errormessage += "Upload your CV File \n";
-		}
-	if (document.getElementById('CertificateFile').value == "") {
-		errormessage += "Upload your Certicates File \n";
-		}
-	if (document.getElementById('CredentialsFile').value == "") {
-		errormessage += "Upload your Credentials \n";
-		}
-	if (document.getElementById('TORFile').value == "") {
-		errormessage += "Upload your TOR \n";
-		}
-
-	if (document.getElementById('PDSFile').value == "") {
-			errormessage += "Upload your PDS\n";
-			}
-			var x = document.querySelector('input[type="radio"]:checked');
-			if ( x == null) {
-				errormessage += "Please select a Sex\n";
-				}
-	if (errormessage != "") {
-		alert(errormessage);
-		return false;
-		}
-
-	
-}
-	</script>
 
 <body>
 	<div id="backbutton"><a href="{% url 'applicantrequirements' %}"> <!--templates/Applicants/Faculty--><img src="{% static 'CRS/images/Applicants/Faculty/back.png' %}" alt="iplm" width="35px" height="35px"></a></div>
@@ -351,7 +192,7 @@
 	<p id="FAFSub">Please complete the form below to be admitted in our department.</p> 
 
 	<p id="FullNametext">Full Name<span style="color:#ff0000"><b>*</b></span></p>
-		<form method ="POST" action="" enctype="multipart/form-data" onsubmit ="return checkforblank()">
+		<form method ="POST" enctype="multipart/form-data" onsubmit ="return checkforblank()">
 			{%csrf_token%}
             <!--last name-->
 			<input type="text" id="LastName" name="lastName" placeholder="Dela Cruz">
@@ -372,29 +213,22 @@
             <!--phone number-->
 			<input type="tel" id="Phone" name="phoneNumber" pattern="[0-9]{11}" placeholder="09123456789">
 			<p id="subPhone">Phone Number</p>
-			<div id="gender">
-				<ul class="donate-now">
-					<li>
-					  <input type="radio" id="Male" name="sex" value="Male" >
-					  <label for="BSIT">Male</label>
-					</li>
-					<li>
-					  <input type="radio" id="Female" name="sex" value ="Female">
-					  <label for="BSEE">Female</label>
-					</li>
-				  </ul>
-				</div>
+
+			<select id="Sex">
+				<option value="Male">Male</option>
+				<option value="Female">Female</option>
+			</select>
 			<p id="subSex">Sex</p>
 
 	<p id="DepartmentInformationText">Department to Apply <span style="color:#ff0000"><b>*</b></span></p>            <!--email address-->
-			<select id="depart" name="department">
-				<option value="BSIT" >BSIT</option>
+			<select id="department" name="department">
+				<option value="BSIT">BSIT</option>
 				<option value="BSEE">BSEE</option>
 			</select>
 			<p id="subDepartment">Department</p>
 
 	<p id="AvailabilityTimeText">Availability Time <span style="color:#ff0000"><b>*</b></span></p>
-			<input type="text" id="Time" name="time" placeholder="12:00AM-12:00PM">
+			<input type="text" id="Time" name="Time" placeholder="12:00AM-12:00PM">
 			<p id="subTime">Time</p>
 
 
@@ -418,49 +252,32 @@
 
 
      <!--Choose file-->       
-	<input type="file" id="CVFile" name="CV" accept=".pdf">
+	<input type="file" id="CVFile" name="CV" mr-4>
             
-	<input type="file" id="CertificateFile" name="certificates" multiple accept=".pdf">
+	<input type="file" id="CertificateFile" name="certificates" multiple>
             
-	<input type="file" id="CredentialsFile" name="credentials" accept=".pdf">
+	<input type="file" id="CredentialsFile" name="credentials">
             
-	<input type="file" id="TORFile" name="TOR" accept=".pdf">
+	<input type="file" id="TORFile" name="TOR">
 
-	<input type="file" id="PDSFile" name="PDS" accept=".pdf">
-		<script>
-			const types = ["CVFile", "PDSFile", "TORFile","CredentialsFile","CertificateFile"];
-		for(let x=0; x<6; x++){
-		var file = document.getElementById(types[x]);
-		file.onchange = function(e) {
-		var ext = this.value.match(/\.([^\.]+)$/)[1];
-		switch (ext) {
-			case 'pdf':
-			case 'PDF':
-			break;
-			default:
-			alert('File type you are uploading is incorrect. \nAccepted file is only PDF');
-			this.value = '';
-		}
-		};
-	}
-	$(function(){
-            $("input[type = 'submit']").click(function(){
-               var $fileUpload = $("input[type='file']");
-               if (parseInt($fileUpload.get(0).files.length) > 3){
-                  alert("You are only allowed to upload a maximum of 3 files");
-               }
-            });
-         });
+	<input type="file" id="PDSFile" name="PDS">
 
-</script>
 
+	{% if messages %}
+	{% for message in messages %}
+			{{ message }}
+		</div>
+	{% endfor %}
+{% endif %}
+	
 	
 	<picture><a><p id="imageForm"><img src="{% static 'CRS/images/Applicants/Faculty/clip-1712.png' %}" alt="iplm" width="290px" height="230px"></a></p></picture>
-	<a href="{% url 'applicant_facultyapplicationform_workexpsheet' %}">
-		 <button id="submitbutton" value="submit" type="submit"> <!--templates/Applicants/Faculty--> Next </button></a>
 
 </form> </div>
-	
+	<a href="{% url 'applicant_facultyapplicationform_workexpsheet' %}"> <button id="submitbutton"> <!--templates/Applicants/Faculty--> Next </button></a>
+
+
+
 <!-- tether, jQuery first, then Tether, then Bootstrap JS. -->
     <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>   
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
