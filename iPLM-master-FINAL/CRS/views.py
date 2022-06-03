@@ -5366,7 +5366,7 @@ def shifter9(request):
             studentStudyplan = request.FILES.get("studyPlanFile")
             collegeLetter = request.FILES.get("letterOfApproval")
             shifter_dateSubmitted = timezone.now()
-            shiftee = ShifterApplicant(studentID=studentID, department=department, lname=lname, fname=fname, mname=mname, eadd=eadd, cnum=cnum, studentshifterletter=studentshifterletter, studentGrade=studentGrade, studentStudyplan=studentStudyplan,shifter_dateSubmitted=shifter_dateSubmitted, applicant_num=applicant_num, sex=sex,collegeLetter = collegeLetter)
+            shiftee = ShifterApplicant(studentID=studentID, department=department, lname=lname, fname=fname, mname=mname, eadd=eadd, cnum=cnum, studentshifterletter=studentshifterletter, studentGrade=studentGrade, studentStudyplan=studentStudyplan,shifter_dateSubmitted=shifter_dateSubmitted, applicant_num=applicant_num, sex=sex,shiftingForm = collegeLetter)
             shiftee.save()
             return redirect('shifter10')
         except:          
@@ -5543,7 +5543,7 @@ def FProfile(request):
 
 
 
-
+#------NEW--------
 def GradesNotif(request):
     if request.user.is_authenticated and request.user.is_student:
         id= request.user.id

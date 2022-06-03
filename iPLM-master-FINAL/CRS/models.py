@@ -625,8 +625,8 @@ class ShifterApplicant(models.Model):
     signature2 = models.ImageField(upload_to='ShifterSign/', null=True, blank=True)
     applicant_num = models.CharField(max_length=10, verbose_name="applicant_num", null=True)
     sex = models.CharField(max_length=100, verbose_name="sex", null=True)
-    collegeLetter = models.FileField(upload_to='ShifterSubmission/', blank=True, null=True)
-
+    shiftingForm = models.FileField(upload_to='ShifterSubmission/', blank=True, null=True)
+    
 
     # dateApproved = models.DateTimeField()
 
